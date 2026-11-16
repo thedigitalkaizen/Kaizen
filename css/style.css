@@ -588,3 +588,36 @@ a.chip-link:hover{border-color:var(--royal);color:var(--royal)}
 .client-card .port-metric{margin:16px 0 0}
 .client-card .port-link{margin-top:16px}
 @media(max-width:680px){.port-summary{gap:10px 26px;padding:18px}.port-summary b{font-size:1.5rem}}
+
+/* ============ COOKIE CONSENT ============ */
+.consent-bar{position:fixed;left:20px;bottom:20px;z-index:300;max-width:460px;padding:18px 20px;border-radius:var(--r-lg);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:14px}
+.consent-bar[hidden]{display:none}
+.consent-bar p{font-size:14px;color:var(--body);line-height:1.55}
+.consent-bar p a{color:var(--royal);text-decoration:underline}
+.consent-actions{display:flex;gap:10px;justify-content:flex-end}
+.consent-actions .btn{padding:10px 20px;font-size:14px}
+.link-btn{background:none;border:0;padding:0;font:inherit;color:rgba(246,248,252,.55);cursor:pointer}
+.link-btn:hover{color:#fff}
+@media(max-width:680px){
+  .consent-bar{left:12px;right:12px;bottom:12px;max-width:none}
+  .consent-open .floaties{bottom:150px}
+}
+
+/* ============ CHAT WIDGET ACTIONS + EXAMPLE LABEL ============ */
+.chat-head .ch-s.example{color:var(--muted)}
+.chat-head .ch-s.example::before{background:var(--muted);box-shadow:none}
+.cw-acts{display:flex;flex-wrap:wrap;gap:8px;align-self:flex-start}
+.cw-acts .btn{padding:8px 14px;font-size:13px}
+
+/* ============ WHAT HAPPENS AFTER YOU BOOK ============ */
+.cta-steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:820px;margin:36px auto 0;padding:0;text-align:left}
+.cta-steps li{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:var(--r);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+.cta-steps .n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:var(--grad);color:#fff}
+.cta-steps b{display:block;color:#fff;font-size:14.5px;margin-bottom:3px}
+.cta-steps li span:not(.n){display:block;font-size:13px;line-height:1.5;color:rgba(246,248,252,.65)}
+.cta-steps.light li{background:var(--surface);border-color:var(--line)}
+.cta-steps.light b{color:var(--text)}
+.cta-steps.light li span:not(.n){color:var(--body)}
+.book-steps{text-align:center}
+.book-steps .cta-steps{margin:22px auto 26px}
+@media(max-width:780px){.cta-steps{grid-template-columns:1fr}}

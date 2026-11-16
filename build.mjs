@@ -27,6 +27,10 @@ check(cfg.googleSiteVerification, /^[A-Za-z0-9_-]{10,100}$/, 'googleSiteVerifica
 check(cfg.email, /^[^\s@"<>]+@[^\s@"<>]+\.[a-z]{2,}$/i, 'email');
 check(cfg.customDomain,/^[a-z0-9.-]+\.[a-z]{2,}$/, 'customDomain');
 for (const [k, v] of Object.entries(cfg.social || {})) check(v, /^https:\/\/[^\s"'<>]+$/, `social.${k}`);
+check(cfg.whatsappNumber, /^\d{8,15}$/, 'whatsappNumber');
+const consentMode = cfg.cookieConsent || 'opt-in';
+if (!['opt-in', 'notice'].includes(consentMode)) throw new Error('site.config.json: cookieConsent must be "opt-in" or "notice"');
+const trackingOn = !!(cfg.ga4Id || cfg.metaPixelId || cfg.clarityId);
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const jsonScript = obj => '<script type="application/ld+json">' + JSON.stringify(obj).replace(/</g, '\\u003c') + '</script>';
@@ -83,6 +87,33 @@ add({ route: 'contact/', key: 'contact', nav: 'contact', title: `Contact & Free 
 add({ route: 'privacy-policy/', key: 'privacy', nav: 'privacy-policy', title: `Privacy Policy | ${NAME}`,
   description: 'How The Kaizen Agency collects, uses and protects information submitted through this website.',
   content: read('src/pages/privacy-policy.html'), crumbs: [['Privacy Policy', 'privacy-policy/']] });
+
+// ROI calculator as its own page (same widget as the home page section)
+{
+  const home = read('src/pages/home.html');
+  const roi = home.slice(home.indexOf('<!-- ROI CALCULATOR -->'), home.indexOf('<!-- PROCESS -->'))
+    .replace(/<div class="s-head center reveal">[\s\S]*?<\/p><\/div>/, '')
+    .replace(/ <a data-nav="tools\/roi-calculator"[^>]*>How we estimate<\/a>/, ' See how we estimate below.');
+  if (!roi.includes('id="c-budget"')) throw new Error('ROI calculator section not found in home.html');
+  const pct = { 'Real Estate': 34, 'E-commerce / Retail': 38, 'Education': 32, 'Healthcare': 30, 'SaaS / Technology': 42, 'Local Services': 36, 'Hospitality & Travel': 33, 'Finance & Insurance': 31 };
+  const faqs = [
+    ['How accurate is this calculator?', 'It is a directional estimate, not a promise. It applies a typical cost-per-lead reduction for your industry to your current numbers. Your real result depends on your offer, creative, landing page, follow-up speed and market.'],
+    ['Where do the improvement percentages come from?', 'They are planning assumptions based on the gains a structured testing process (better targeting, more creatives, cleaner tracking and faster lead follow-up) commonly delivers. On a strategy call we replace them with a forecast built on your own ad account data.'],
+    ['What counts as a “qualified lead”?', 'Here it simply means a lead at your current cost per lead. On a call we agree on what a qualified lead means for your business, for example a booked counselling session or a paid deposit.'],
+    ['Is the strategy call really free?', 'Yes. It is a 30-minute call on Google Meet. You leave with the top three fixes for your account whether or not you work with us.'],
+  ];
+  add({ route: 'tools/roi-calculator/', key: 'tool', nav: 'tools/roi-calculator', title: `Ad Spend ROI Calculator: Leads & Cost per Lead | ${NAME}`,
+    description: 'Free ad spend calculator: enter your monthly budget and cost per lead to estimate how many more leads a structured Meta and Google Ads testing process could bring.',
+    content: `<section class="page active" id="page-tool">${pageHero('Free tool', 'Ad spend ROI calculator', 'Enter your monthly ad budget and current cost per lead to see how many more leads you could get from the same spend.')}
+${roi}
+<section class="section"><div class="wrap"><div class="detail-grid">
+  <div class="reveal"><h2 class="h-md">How the estimate works</h2><p class="muted" style="margin-top:12px">Today’s leads = monthly budget ÷ current cost per lead. We then lower your cost per lead by a typical improvement for your industry and recalculate the leads the same budget buys. The annual saving is what those extra leads would cost you at today’s price.</p><p class="muted" style="margin-top:12px">These are planning assumptions, not guaranteed results.</p></div>
+  <div class="info-card reveal d1"><h3 style="margin-bottom:12px">Cost-per-lead reduction used</h3><ul class="check-list">${Object.entries(pct).map(([k, v]) => `<li>${tick}<span>${k.replace('&', '&amp;')}: <b>${v}%</b></span></li>`).join('')}</ul></div>
+</div></div></section>
+${faqSection(faqs)}
+${ctaBand}</section>`,
+    crumbs: [['ROI Calculator', 'tools/roi-calculator/']] });
+}
 
 for (const s of services) {
   const related = services.filter(o => o.slug !== s.slug && (o.tag === s.tag || o.tag === 'Core')).slice(0, 3);
@@ -142,13 +173,17 @@ const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalServ
   knowsAbout: services.map(s => s.title),
   sameAs: Object.values(cfg.social || {}).filter(Boolean) };
 
+// Tags respect the visitor's cookie choice (stored as kz-consent = granted | denied).
+// opt-in: nothing is tracked until "Accept". notice: tracked unless "Decline".
 function tracking() {
-  let h = '';
-  if (cfg.ga4Id) h += `<script async src="https://www.googletagmanager.com/gtag/js?id=${cfg.ga4Id}"></script>\n<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${cfg.ga4Id}');</script>\n`;
-  if (cfg.metaPixelId) h += `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${cfg.metaPixelId}');fbq('track','PageView');</script>\n`;
-  if (cfg.clarityId) h += `<script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${cfg.clarityId}");</script>\n`;
+  if (!trackingOn) return '';
+  let h = `<script>(function(){var c=null;try{c=localStorage.getItem('kz-consent');}catch(e){}window.KZ_CONSENT_OK=${consentMode === 'notice' ? "c!=='denied'" : "c==='granted'"};})();</script>\n`;
+  if (cfg.ga4Id) h += `<script async src="https://www.googletagmanager.com/gtag/js?id=${cfg.ga4Id}"></script>\n<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var kzG=window.KZ_CONSENT_OK?'granted':'denied';gtag('consent','default',{ad_storage:kzG,analytics_storage:kzG,ad_user_data:kzG,ad_personalization:kzG});gtag('js',new Date());gtag('config','${cfg.ga4Id}');</script>\n`;
+  if (cfg.metaPixelId) h += `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');if(!window.KZ_CONSENT_OK)fbq('consent','revoke');fbq('init','${cfg.metaPixelId}');fbq('track','PageView');</script>\n`;
+  if (cfg.clarityId) h += `<script>window.kzLoadClarity=function(){if(window.kzClarityLoaded)return;window.kzClarityLoaded=1;(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${cfg.clarityId}");};if(window.KZ_CONSENT_OK)window.kzLoadClarity();</script>\n`;
   return h;
 }
+const consentBar = `<div class="consent-bar" id="consentBar" role="region" aria-label="Cookie choice" hidden><p>We use cookies to measure how our website and ads perform. <a data-nav="privacy-policy">Privacy policy</a></p><div class="consent-actions"><button type="button" class="btn btn-ghost" data-consent="denied">Decline</button><button type="button" class="btn btn-primary" data-consent="granted">Accept</button></div></div>`;
 
 function faqSchema(html) {
   const qs = [...html.matchAll(/<button class="faq-q">([\s\S]*?)<span class="ico">[\s\S]*?<div class="faq-a"><p>([\s\S]*?)<\/p><\/div>/g)];
@@ -159,7 +194,10 @@ function faqSchema(html) {
 
 // ---------- render ----------
 const industryLinks = industries.map(i => `<a data-nav="industries/${i.slug}">${i.navTitle}</a>`).join('');
-const clientConfig = { formspree: cfg.formspreeEndpoint || '', booking: cfg.bookingUrl || '' };
+const clientConfig = { formspree: cfg.formspreeEndpoint || '', booking: cfg.bookingUrl || '', whatsapp: cfg.whatsappNumber || '' };
+
+const STEPS = [['Pick a time', 'Choose any free 30-minute slot in our calendar.'], ['Audit call on Google Meet', 'We review your ads, funnel and cost per lead with you, live.'], ['Leave with a plan', 'You get the top 3 fixes in writing, whether or not you hire us.']];
+const bookSteps = (cls = '') => `<ol class="cta-steps${cls}" aria-label="What happens after you book">${STEPS.map(([t, d], i) => `<li><span class="n">${i + 1}</span><div><b>${t}</b><span>${d}</span></div></li>`).join('')}</ol>`;
 
 function render(p, baseOverride) {
   const depth = p.route.split('/').filter(Boolean).length;
@@ -168,13 +206,18 @@ function render(p, baseOverride) {
   const schemas = [orgSchema];
   if (p.crumbs) schemas.push({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [['Home', ''], ...p.crumbs].map(([n, r], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + '/' + r })) });
   const fs_ = faqSchema(p.content); if (fs_) schemas.push(fs_);
+  p = { ...p, content: p.content
+    .replace(/(<div class="cta-band[\s\S]*?<div class="row">[\s\S]*?<\/div>)/g, '$1' + bookSteps())
+    .replace('{{BOOK_STEPS}}', `<div class="book-steps reveal"><h2 class="h-md">What happens after you book</h2>${bookSteps(' light')}<a class="btn btn-primary" data-nav="contact">Pick a time ${arrow}</a></div>`) };
   if (p.schema) schemas.push(p.schema);
   let head = '';
   if (cfg.googleSiteVerification && p.route === '') head += `<meta name="google-site-verification" content="${cfg.googleSiteVerification}">\n`;
   head += schemas.map(jsonScript).join('\n') + '\n';
   head += `<script>window.KAIZEN=${JSON.stringify(clientConfig).replace(/</g, '\\u003c')};</script>\n`;
   head += tracking();
-  const bodyEnd = cfg.metaPixelId ? `<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=${cfg.metaPixelId}&amp;ev=PageView&amp;noscript=1"></noscript>` : '';
+  let bodyEnd = trackingOn ? consentBar : '';
+  // no-JS pixel can't ask for consent, so it only runs in "notice" mode
+  if (cfg.metaPixelId && consentMode === 'notice') bodyEnd += `<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=${cfg.metaPixelId}&amp;ev=PageView&amp;noscript=1"></noscript>`;
 
   let html = layout
     .replace('{{CONTENT}}', p.content)
@@ -188,6 +231,8 @@ function render(p, baseOverride) {
     .replaceAll('{{OG_IMAGE}}', SITE + '/assets/img/og-image.jpg')
     .replaceAll('{{PAGE}}', p.key)
     .replaceAll('{{BASE}}', BASE);
+
+  if (trackingOn) html = html.replace('<a data-nav="privacy-policy">Privacy Policy</a>', '<a data-nav="privacy-policy">Privacy Policy</a><button type="button" class="link-btn" data-cookie-settings>Cookie settings</button>');
 
   // data-nav="x" → real links (and active state, and booking hook on "Book" buttons)
   html = html.replace(/<a\b([^>]*?)\sdata-nav="([^"]+)"([^>]*)>([\s\S]*?)<\/a>/g, (m, pre, target, post, inner) => {

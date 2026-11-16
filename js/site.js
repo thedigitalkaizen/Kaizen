@@ -16,6 +16,65 @@ var FORMSPREE_ENDPOINT=CFG.formspree||'';
   }
 })();
 
+/* ---------- CAMPAIGN SOURCE: remember where the visitor came from, attach it to every form lead ---------- */
+var ATTR_KEYS=['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid','gbraid','wbraid','fbclid'];
+function readStore(k){try{return JSON.parse(localStorage.getItem(k)||'null');}catch(e){return null;}}
+function writeStore(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return '';}}
+(function(){
+  var q,hit={},n=0;
+  try{q=new URLSearchParams(location.search);}catch(e){return;}
+  ATTR_KEYS.forEach(function(k){var v=q.get(k);if(v){hit[k]=v.slice(0,150);n++;}});
+  var ref=document.referrer&&hostOf(document.referrer)!==location.hostname?document.referrer.slice(0,300):'';
+  if(n||ref){
+    hit.referrer=ref;hit.landing_page=location.pathname;hit.at=new Date().toISOString().slice(0,16);
+    if(!readStore('kz-first'))writeStore('kz-first',hit);
+    writeStore('kz-last',hit);
+  }else if(!readStore('kz-first')){
+    writeStore('kz-first',{landing_page:location.pathname,at:new Date().toISOString().slice(0,16)});
+  }
+})();
+function describeTouch(t){
+  if(!t)return 'direct';
+  if(t.utm_source)return [t.utm_source,t.utm_medium||'-',t.utm_campaign||'-'].join(' / ');
+  if(t.gclid||t.gbraid||t.wbraid)return 'google ads (click id)';
+  if(t.fbclid)return 'facebook / instagram (click id)';
+  if(t.referrer)return 'referral: '+hostOf(t.referrer);
+  return 'direct';
+}
+function attributionFields(){
+  var first=readStore('kz-first'),last=readStore('kz-last')||first,out={};
+  out.lead_source=describeTouch(last);
+  out.first_source=describeTouch(first);
+  if(last)ATTR_KEYS.forEach(function(k){if(last[k])out[k]=last[k];});
+  out.landing_page=(last&&last.landing_page)||(first&&first.landing_page)||'';
+  out.first_visit=(first&&first.at)||'';
+  out.form_page=location.pathname;
+  return out;
+}
+
+/* ---------- COOKIE CONSENT (banner only exists when a tracking ID is configured) ---------- */
+var cbar=document.getElementById('consentBar');
+function applyConsent(ok){
+  var g=ok?'granted':'denied',wasOk=!!window.KZ_CONSENT_OK;
+  try{if(window.gtag)window.gtag('consent','update',{ad_storage:g,analytics_storage:g,ad_user_data:g,ad_personalization:g});}catch(e){}
+  try{if(window.fbq){window.fbq('consent',ok?'grant':'revoke');if(ok&&!wasOk)window.fbq('track','PageView');}}catch(e){}
+  if(ok&&window.kzLoadClarity)window.kzLoadClarity();
+  window.KZ_CONSENT_OK=ok;
+}
+function showConsent(on){if(!cbar)return;cbar.hidden=!on;document.body.classList.toggle('consent-open',on);}
+if(cbar){
+  var choice=null;try{choice=localStorage.getItem('kz-consent');}catch(e){}
+  if(!choice)showConsent(true);
+  cbar.addEventListener('click',function(e){
+    var b=e.target.closest('[data-consent]');if(!b)return;
+    var v=b.getAttribute('data-consent');
+    try{localStorage.setItem('kz-consent',v);}catch(err){}
+    applyConsent(v==='granted');showConsent(false);
+  });
+  document.addEventListener('click',function(e){if(e.target.closest('[data-cookie-settings]'))showConsent(true);});
+}
+
 /* ---------- CONVERSION TRACKING (GA4 + Meta Pixel + Clarity, whichever are installed) ---------- */
 function track(name,params,fbEvent){
   params=params||{};
@@ -202,16 +261,28 @@ var cw=$('#chatWidget');
 function cwToggle(o){if(cw)cw.classList.toggle('open',o)}
 var cwBtn=$('#aiFloat');if(cwBtn)cwBtn.addEventListener('click',function(){cwToggle(!cw.classList.contains('open'))});
 var cwClose=$('#cwClose');if(cwClose)cwClose.addEventListener('click',function(){cwToggle(false)});
+var BASE=document.documentElement.getAttribute('data-base')||'./';
+var CW_REPLIES={
+  cpl:'A high cost per lead usually comes from one of three things: targeting that is too broad, too few ad creatives, or slow follow-up on leads. On a free 30-minute audit we look at your ad account and tell you which one it is.',
+  leads:'We\u2019ll map where your next leads should come from (Meta, Google or both) and what a realistic cost per lead looks like for your industry and budget.'
+};
 $$('.cw-quick button').forEach(function(b){b.addEventListener('click',function(){
+  if(b.getAttribute('data-q')==='book')return; /* data-book opens the calendar popup */
   var body=$('#cwBody');
   var u=document.createElement('div');u.className='bubble user';u.textContent=b.textContent;body.appendChild(u);
   var ty=document.createElement('div');ty.className='typing';ty.innerHTML='<span></span><span></span><span></span>';body.appendChild(ty);body.scrollTop=body.scrollHeight;
   setTimeout(function(){
     body.removeChild(ty);
     var r=document.createElement('div');r.className='bubble bot';
-    r.textContent='Great question. The fastest path is a free 20-minute strategy call \u2014 shall I book you in?';
-    body.appendChild(r);body.scrollTop=body.scrollHeight;
-  },1200);
+    var q=b.getAttribute('data-q'),rep=CW_REPLIES[q]||CW_REPLIES.cpl;
+    r.textContent=rep;body.appendChild(r);
+    var acts=document.createElement('div');acts.className='cw-acts';
+    acts.innerHTML='<button type="button" class="btn btn-primary" data-book>Book free audit</button>'+
+      (CFG.whatsapp?'<a class="btn btn-ghost" target="_blank" rel="noopener" href="https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent('Hi Kaizen team, '+b.textContent+'.')+'">WhatsApp us</a>':'')+
+      (q==='leads'?'<a class="btn btn-ghost" href="'+BASE+'tools/roi-calculator/">Try the ROI calculator</a>':'');
+    body.appendChild(acts);body.scrollTop=body.scrollHeight;
+    track('chat_question',{topic:q});
+  },900);
 });});
 
 /* ---------- EXIT INTENT ---------- */
@@ -256,6 +327,8 @@ $$('form[data-ok]').forEach(function(f){
 
     var data=new FormData(f);
     data.set('_subject','New lead — '+(f.getAttribute('data-source')||'The Kaizen Agency website'));
+    var attr=attributionFields();
+    Object.keys(attr).forEach(function(k){if(attr[k])data.set(k,attr[k]);});
 
     if(btn){btn.disabled=true;btn.innerHTML='Sending…';}
     fetch(FORMSPREE_ENDPOINT,{method:'POST',body:data,headers:{'Accept':'application/json'}})
@@ -263,7 +336,7 @@ $$('form[data-ok]').forEach(function(f){
         if(!res.ok)throw new Error('Request failed');
         var src=f.getAttribute('data-source')||'website';
         if(/newsletter/i.test(src))track('sign_up',{method:'newsletter'},'Subscribe');
-        else track('generate_lead',{form_name:src},'Lead');
+        else track('generate_lead',{form_name:src,lead_source:attr.lead_source},'Lead');
         if(ok)ok.classList.add('show');
         f.reset();
         if(f.closest('.modal'))setTimeout(hideModal,1400);

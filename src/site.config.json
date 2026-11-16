@@ -17,6 +17,9 @@
   "metaPixelId": "",
   "clarityId": "",
 
+  "_cookieConsent": "opt-in = no tracking until the visitor clicks Accept (safest). notice = tracking runs unless they click Decline (more data). The banner only appears once a tracking ID is set.",
+  "cookieConsent": "opt-in",
+
   "_booking": "Google Calendar appointment page (long calendar.google.com link, opens as a popup on the site; short link: https://calendar.app.google/VWGDVKbRjunMm8sZA). A Calendly link also opens as a popup. Any other link opens in a new tab. Empty = buttons go to the contact page.",
   "bookingUrl": "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0IDO6kzPcJTnAvSafvCceTOrIcq8xVDPW50cukAOkh2Q28PczfY1dVNpHPyn12HTmLBEr_JVqA",
 

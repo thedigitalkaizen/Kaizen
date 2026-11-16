@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light" data-page="{{PAGE}}">
+<html lang="en" data-theme="light" data-page="{{PAGE}}" data-base="{{BASE}}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,7 +91,7 @@
           <a href="#" data-social="youtube" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5.5" width="19" height="13" rx="4" stroke="currentColor" stroke-width="2"></rect><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"></path></svg></a>
         </div>
       </div>
-      <div class="foot-col"><h5>Company</h5><ul><li><a data-nav="about">About</a></li><li><a data-nav="services">Services</a></li><li><a data-nav="portfolio">Portfolio</a></li><li><a data-nav="blog">Blog</a></li><li><a data-nav="contact">Contact</a></li></ul></div>
+      <div class="foot-col"><h5>Company</h5><ul><li><a data-nav="about">About</a></li><li><a data-nav="services">Services</a></li><li><a data-nav="portfolio">Portfolio</a></li><li><a data-nav="blog">Blog</a></li><li><a data-nav="tools/roi-calculator">ROI Calculator</a></li><li><a data-nav="contact">Contact</a></li></ul></div>
       <div class="foot-col"><h5>Services</h5><ul><li><a data-nav="services/meta-ads">Meta Ads</a></li><li><a data-nav="services/google-ads">Google Ads</a></li><li><a data-nav="services/seo">SEO</a></li><li><a data-nav="services/lead-generation">Lead Generation</a></li><li><a data-nav="services/ai-automation">AI Automation</a></li></ul></div>
       <div class="foot-col news"><h5>The Kaizen Journal</h5><p>One practical growth playbook in your inbox each week. No fluff.</p><form data-ok="newsOk" data-source="Footer newsletter"><input type="text" name="_gotcha" class="fld-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="email" name="email" placeholder="you@company.com" required=""><button class="btn btn-primary btn-block" type="submit">Subscribe</button></form><div class="form-ok" id="newsOk" style="margin-top:12px">You're in — check your inbox to confirm.</div><div class="form-error" id="newsErr" style="margin-top:12px">Something went wrong. Please try again.</div></div>
     </div>
@@ -103,14 +103,14 @@
 <!-- ============ FLOATING BUTTONS ============ -->
 <div class="floaties">
   <a class="float-btn wa" href="https://wa.me/917666459020?text=Hi%20Kaizen%2C%20I%27d%20like%20a%20free%20audit" target="_blank" rel="noopener" aria-label="WhatsApp"><span class="tip">Chat on WhatsApp</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm5.7 14.2c-.24.67-1.4 1.28-1.93 1.32-.5.05-1.13.07-1.83-.11a10.9 10.9 0 01-1.66-.62 8.6 8.6 0 01-3.3-2.92c-.24-.32-1.06-1.4-1.06-2.68 0-1.27.67-1.9.9-2.16a.95.95 0 01.69-.32h.49c.16 0 .37-.06.58.44.21.5.72 1.77.78 1.9a.47.47 0 01.02.45c-.4.8-.83 .77-.61 1.15.83 1.42 1.66 1.92 2.92 2.55.21.11.34.09.47-.05.13-.15.54-.63.68-.85.14-.21.28-.18.47-.11.2.07 1.26.6 1.48.71.21.11.35.16.4.25.06.09.06.52-.18 1.19z"></path></svg></a>
-  <button class="float-btn ai" id="aiFloat" aria-label="Chat with Kaizen AI"><span class="badge-dot"></span><span class="tip">Ask Kaizen AI</span><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="7" width="16" height="12" rx="3" stroke="currentColor" stroke-width="2"></rect><path d="M12 3v4M9 13h.01M15 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+  <button class="float-btn ai" id="aiFloat" aria-label="Chat with the Kaizen team"><span class="badge-dot"></span><span class="tip">Ask us</span><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="7" width="16" height="12" rx="3" stroke="currentColor" stroke-width="2"></rect><path d="M12 3v4M9 13h.01M15 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
 </div>
 
 <!-- AI CHAT WIDGET -->
 <div class="chat-widget" id="chatWidget">
-  <div class="cw-head"><span class="cw-av"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="7" width="16" height="12" rx="3" stroke="currentColor" stroke-width="2"></rect><path d="M12 3v4M9 13h.01M15 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span><div><div class="cw-t">Kaizen AI</div><div class="cw-s">Typically replies instantly</div></div><button class="cw-close" id="cwClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button></div>
-  <div class="cw-body" id="cwBody"><div class="bubble bot">Hi 👋 I'm the Kaizen AI. Tell me what's slowing your growth and I'll point you to the fastest fix.</div></div>
-  <div class="cw-quick"><button>My CPL is too high</button><button>I need more leads</button><button>Book a strategy call</button></div>
+  <div class="cw-head"><span class="cw-av"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="7" width="16" height="12" rx="3" stroke="currentColor" stroke-width="2"></rect><path d="M12 3v4M9 13h.01M15 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></span><div><div class="cw-t">Kaizen Team</div><div class="cw-s">Quick answers, then a real person</div></div><button class="cw-close" id="cwClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button></div>
+  <div class="cw-body" id="cwBody"><div class="bubble bot">Hi 👋 We're the Kaizen team. Pick what's slowing your growth and we'll show you the next step.</div></div>
+  <div class="cw-quick"><button type="button" data-q="cpl">My CPL is too high</button><button type="button" data-q="leads">I need more leads</button><button type="button" data-q="book" data-book>Book a strategy call</button></div>
 </div>
 
 <!-- EXIT INTENT MODAL -->
