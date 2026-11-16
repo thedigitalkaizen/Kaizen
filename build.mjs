@@ -45,11 +45,17 @@ const processSteps = `<section class="section" style="background:var(--bg-2)"><d
 
 // ---------- portfolio ----------
 const publishedCases = clients.filter(c => c.caseStudy && c.caseStudy.published);
+// one badge colour per industry, so colour carries meaning instead of rotating
+const catColor = { education: 'ic-royal', travel: 'ic-em', hospitality: 'ic-amber', lifestyle: 'ic-violet' };
 function portCard(c) {
-  const tile = c.logo ? `<img src="{{BASE}}${esc(c.logo)}" alt="${esc(c.name)} logo" loading="lazy">` : `<span>${c.ini}</span>`;
+  const mark = c.logo ? `<img src="{{BASE}}${esc(c.logo)}" alt="${esc(c.name)} logo" loading="lazy">` : c.ini;
   const metric = c.metric ? `<div class="port-metric"><b>${esc(c.metric)}</b><span>${esc(c.metricLabel)}</span></div>` : '';
   const link = c.caseStudy && c.caseStudy.published ? `<a class="port-link" data-nav="portfolio/${c.slug}">Read case study ${arrow}</a>` : '';
-  return `<div class="port" data-cat="${c.cat}"><div class="port-img"><span class="cat">${c.catL}</span><div class="port-tile ${c.tile}${c.logo ? ' has-logo' : ''}">${tile}</div></div><div class="port-body"><h3>${esc(c.name)}</h3><p>${esc(c.desc)}</p>${metric}${link}</div></div>`;
+  return `<div class="port client-card reveal" data-cat="${c.cat}"><div class="client-top"><div class="client-mark ${catColor[c.cat] || 'ic-royal'}${c.logo ? ' has-logo' : ''}">${mark}</div><div><h3>${esc(c.name)}</h3><span class="client-cat">${c.catL}</span></div></div><p>${esc(c.desc)}</p>${metric}${link}</div>`;
+}
+function portSummary() {
+  const inds = [...new Set(clients.map(c => c.catL))];
+  return `<div class="port-summary reveal"><div><b>${clients.length}</b><span>brands</span></div><div><b>${inds.length}</b><span>industries</span></div><div><b>2</b><span>countries: India &amp; Bahrain</span></div></div>`;
 }
 
 // ---------- page definitions ----------
@@ -67,7 +73,7 @@ add({ route: 'services/', key: 'services', nav: 'services', title: `Digital Mark
   content: read('src/pages/services.html'), crumbs: [['Services', 'services/']] });
 add({ route: 'portfolio/', key: 'portfolio', nav: 'portfolio', title: `Portfolio & Client Work | ${NAME}`,
   description: 'Brands we work with across education, travel, training and hospitality — including Akbar Study Abroad, Akbar Umrah and Akbar Training Center Bahrain.',
-  content: read('src/pages/portfolio.html').replace('{{PORTFOLIO_GRID}}', clients.map(portCard).join('')), crumbs: [['Portfolio', 'portfolio/']] });
+  content: read('src/pages/portfolio.html').replace('{{PORTFOLIO_GRID}}', clients.map(portCard).join('')).replace('{{PORTFOLIO_SUMMARY}}', portSummary()), crumbs: [['Portfolio', 'portfolio/']] });
 add({ route: 'blog/', key: 'blog', nav: 'blog', title: `The Kaizen Journal — Growth Playbooks | ${NAME}`,
   description: 'Practical growth playbooks for Meta Ads, Google Ads, SEO, CRO and AI automation from The Kaizen Agency.',
   content: read('src/pages/blog.html'), crumbs: [['Blog', 'blog/']] });
