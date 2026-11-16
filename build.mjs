@@ -59,7 +59,7 @@ function portCard(c) {
 }
 function portSummary() {
   const inds = [...new Set(clients.map(c => c.catL))];
-  return `<div class="port-summary reveal"><div><b>${clients.length}</b><span>brands</span></div><div><b>${inds.length}</b><span>industries</span></div><div><b>2</b><span>countries: India &amp; Bahrain</span></div></div>`;
+  return `<div class="port-summary reveal"><div><b>${clients.length}</b><span>brands</span></div><div><b>${inds.length}</b><span>industries</span></div><div><b>6</b><span>countries: India, KSA, UAE, Qatar, Bahrain &amp; Oman</span></div></div>`;
 }
 
 // ---------- page definitions ----------
@@ -129,7 +129,7 @@ ${ctaBand}</section>`;
   add({ route: `services/${s.slug}/`, key: 'service', nav: 'services', title: `${s.title} Agency in India & the GCC | ${NAME}`,
     description: s.metaDescription, content, crumbs: [['Services', 'services/'], [s.title, `services/${s.slug}/`]],
     schema: { '@context': 'https://schema.org', '@type': 'Service', name: s.title, serviceType: s.title, description: s.metaDescription,
-      provider: { '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'], url: SITE + '/' }, areaServed: ['India', 'Bahrain', 'United Arab Emirates', 'Saudi Arabia'] } });
+      provider: { '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'], url: SITE + '/' }, areaServed: ['India', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Bahrain', 'Oman'] } });
 }
 
 const svcBySlug = Object.fromEntries(services.map(s => [s.slug, s]));
@@ -169,7 +169,7 @@ const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalServ
   description: 'Performance marketing agency specialising in Meta Ads, Google Ads, SEO, lead generation and AI automation.',
   url: SITE + '/', image: SITE + '/assets/img/og-image.jpg', telephone: cfg.phone, email: cfg.email, priceRange: '₹₹',
   address: { '@type': 'PostalAddress', addressLocality: 'Mumbai', addressRegion: 'Maharashtra', addressCountry: 'IN' },
-  areaServed: ['India', 'Bahrain', 'United Arab Emirates', 'Saudi Arabia'],
+  areaServed: ['India', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Bahrain', 'Oman'],
   knowsAbout: services.map(s => s.title),
   sameAs: Object.values(cfg.social || {}).filter(Boolean) };
 

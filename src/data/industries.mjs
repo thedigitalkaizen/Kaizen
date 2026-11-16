@@ -80,7 +80,7 @@ export const industries = [
       ['Local SEO in Bahrain', 'Google Business Profile and pages for “training centre in Bahrain” searches.']
     ],
     faqs: [
-      ['Do you run campaigns in Bahrain and the GCC?', 'Yes — we manage campaigns for Bahrain-based clients and target Bahrain, Saudi Arabia, the UAE and the wider GCC.'],
+      ['Do you run campaigns in Bahrain and the GCC?', 'Yes — we manage campaigns for Bahrain-based clients and target Saudi Arabia, the UAE, Qatar, Bahrain and Oman.'],
       ['Can you advertise in Arabic?', 'Yes, we run English and Arabic creatives and test which converts better per course.'],
       ['Can you help with corporate training sales?', 'Yes, using LinkedIn and Google Ads to reach HR and L&D decision-makers.']
     ]
