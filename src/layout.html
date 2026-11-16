@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="{{BASE}}css/style.css">
+<link rel="stylesheet" href="{{BASE}}css/style.css?v={{V_CSS}}">
 </head>
 <body>
 <!-- ============ HEADER ============ -->
@@ -91,7 +91,7 @@
           <a href="#" data-social="youtube" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5.5" width="19" height="13" rx="4" stroke="currentColor" stroke-width="2"></rect><path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor"></path></svg></a>
         </div>
       </div>
-      <div class="foot-col"><h5>Company</h5><ul><li><a data-nav="about">About</a></li><li><a data-nav="services">Services</a></li><li><a data-nav="portfolio">Portfolio</a></li><li><a data-nav="blog">Blog</a></li><li><a data-nav="tools/roi-calculator">ROI Calculator</a></li><li><a data-nav="contact">Contact</a></li></ul></div>
+      <div class="foot-col"><h5>Company</h5><ul><li><a data-nav="about">About</a></li><li><a data-nav="services">Services</a></li><li><a data-nav="portfolio">Portfolio</a></li><li><a data-nav="blog">Blog</a></li><li><a data-nav="tools/roi-calculator">ROI Calculator</a></li><li><a data-nav="guides">Free Guides</a></li><li><a data-nav="contact">Contact</a></li></ul></div>
       <div class="foot-col"><h5>Services</h5><ul><li><a data-nav="services/meta-ads">Meta Ads</a></li><li><a data-nav="services/google-ads">Google Ads</a></li><li><a data-nav="services/seo">SEO</a></li><li><a data-nav="services/lead-generation">Lead Generation</a></li><li><a data-nav="services/ai-automation">AI Automation</a></li></ul></div>
       <div class="foot-col news"><h5>The Kaizen Journal</h5><p>One practical growth playbook in your inbox each week. No fluff.</p><form data-ok="newsOk" data-source="Footer newsletter"><input type="text" name="_gotcha" class="fld-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="email" name="email" placeholder="you@company.com" required=""><button class="btn btn-primary btn-block" type="submit">Subscribe</button></form><div class="form-ok" id="newsOk" style="margin-top:12px">You're in — check your inbox to confirm.</div><div class="form-error" id="newsErr" style="margin-top:12px">Something went wrong. Please try again.</div></div>
     </div>
@@ -135,6 +135,6 @@
 </div>
 
 {{BODY_END}}
-<script src="{{BASE}}js/site.js"></script>
+<script src="{{BASE}}js/site.js?v={{V_JS}}"></script>
 </body>
 </html>

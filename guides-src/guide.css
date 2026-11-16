@@ -1,0 +1,31 @@
+@page { size: A4; margin: 18mm 18mm 20mm; }
+* { box-sizing: border-box; }
+body { font-family: "Segoe UI", Arial, sans-serif; color: #2a3350; font-size: 10.5pt; line-height: 1.6; margin: 0; }
+h1, h2, h3 { color: #0b1226; line-height: 1.25; }
+.cover { height: 257mm; display: flex; flex-direction: column; justify-content: space-between; padding: 14mm 12mm; border-radius: 6mm;
+  background: linear-gradient(140deg, #0b1226 0%, #18245a 55%, #2f6bff 130%); color: #fff; page-break-after: always; }
+.cover .brand { font-weight: 700; font-size: 13pt; letter-spacing: .02em; }
+.cover .brand span { display: block; font-size: 8pt; letter-spacing: .25em; color: #9fb6ff; font-weight: 600; margin-top: 2px; }
+.cover .kicker { display: inline-block; background: #2f6bff; padding: 4px 12px; border-radius: 20px; font-size: 9pt; font-weight: 700; letter-spacing: .12em; }
+.cover h1 { color: #fff; font-size: 34pt; margin: 8mm 0 5mm; }
+.cover p { color: #c9d4f5; font-size: 12pt; max-width: 135mm; }
+.cover .foot { font-size: 9pt; color: #9fb6ff; }
+h2 { font-size: 17pt; margin: 0 0 3mm; padding-top: 2mm; }
+h2 .n { color: #2f6bff; margin-right: 6px; }
+h3 { font-size: 12pt; margin: 6mm 0 2mm; }
+.section { page-break-before: always; }
+.section.cont { page-break-before: auto; margin-top: 9mm; }
+p { margin: 0 0 3mm; }
+ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+li { margin-bottom: 1.5mm; }
+.tip { background: #eef3ff; border-left: 3px solid #2f6bff; padding: 3mm 4mm; border-radius: 2mm; margin: 4mm 0; }
+.tip b { color: #0b1226; }
+table { width: 100%; border-collapse: collapse; margin: 3mm 0 5mm; font-size: 9.5pt; }
+th, td { text-align: left; vertical-align: top; padding: 2.2mm 3mm; border-bottom: 1px solid #dfe5f3; }
+th { background: #f3f6fc; color: #0b1226; }
+.check li { list-style: none; position: relative; padding-left: 7mm; margin-left: -6mm; }
+.check li::before { content: ""; position: absolute; left: 0; top: 1.2mm; width: 3.2mm; height: 3.2mm; border: 1.4px solid #2f6bff; border-radius: 1mm; }
+.cta { margin-top: 8mm; padding: 6mm; border-radius: 4mm; background: #0b1226; color: #dfe6fb; }
+.cta h3 { color: #fff; margin-top: 0; }
+.cta a { color: #8fb0ff; }
+.small { font-size: 8.5pt; color: #6b7593; }

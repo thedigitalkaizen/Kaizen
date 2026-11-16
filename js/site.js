@@ -339,6 +339,7 @@ $$('form[data-ok]').forEach(function(f){
         else track('generate_lead',{form_name:src,lead_source:attr.lead_source},'Lead');
         if(ok)ok.classList.add('show');
         f.reset();
+        if(f.closest('.guide-card'))f.hidden=true;
         if(f.closest('.modal'))setTimeout(hideModal,1400);
       })
       .catch(function(){

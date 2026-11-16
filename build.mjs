@@ -2,12 +2,14 @@
 // Usage: node build.mjs
 // Edit content in src/ (pages, data, site.config.json), never in docs/.
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { services } from './src/data/services.mjs';
 import { clients } from './src/data/clients.mjs';
 import { industries } from './src/data/industries.mjs';
 import { icons, arrow } from './src/data/icons.mjs';
+import { posts } from './src/data/posts.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(ROOT, 'docs');
@@ -134,13 +136,60 @@ ${ctaBand}</section>`;
 }
 
 const svcBySlug = Object.fromEntries(services.map(s => [s.slug, s]));
+// ---------- Free guides (PDFs made by tools/make-guides.sh, given in exchange for an email) ----------
+const guides = [
+  { id: 'meta-playbook', file: 'meta-ads-playbook-education.pdf', tone: 'royal', kicker: 'Playbook · 7 pages', title: 'Meta Ads Playbook for Education Brands',
+    text: 'For study-abroad consultants, coaching centres and training institutes.',
+    points: ['Work out the most you can pay per lead', 'Tracking that tells Meta who your good leads are', 'Offers and creatives that attract serious students', 'Follow-up routine and launch checklist'] },
+  { id: 'umrah-checklist', file: 'umrah-season-checklist.pdf', tone: 'em', kicker: 'Checklist · 4 pages', title: 'Umrah Season Campaign Checklist',
+    text: 'For Umrah travel agencies planning Ramadan 2027 and the season after.',
+    points: ['Packages and trust signals to prepare', 'Ads and a month-by-month content plan', 'WhatsApp enquiry handling for peak weeks', 'Before, during and after travel'] },
+];
+const guideCard = g => `<div class="guide-card reveal"><div class="guide-cover ${g.tone}"><span>${g.kicker}</span><b>${g.title}</b></div><div class="guide-body"><p>${g.text}</p><ul class="check-list compact">${g.points.map(p => `<li>${tick}<span>${p}</span></li>`).join('')}</ul>
+<form data-ok="${g.id}Ok" data-source="Guide download — ${g.title}"><input type="hidden" name="guide" value="${g.title}"><div class="guide-fields"><input type="text" name="name" placeholder="Your name" required autocomplete="name" aria-label="Your name"><input type="email" name="email" placeholder="Work email" required autocomplete="email" aria-label="Email"></div><input type="text" name="_gotcha" class="fld-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><button class="btn btn-primary btn-block" type="submit">Get the free guide ${arrow}</button></form>
+<div class="form-ok" id="${g.id}Ok">Thanks! <a class="btn btn-em btn-block" style="margin-top:10px" href="{{BASE}}assets/guides/${g.file}" target="_blank" rel="noopener" data-guide="${g.id}">Download the PDF</a></div><div class="form-error" id="${g.id}Err">Something went wrong. Please try again.</div></div></div>`;
+for (const g of guides) if (!fs.existsSync(path.join(ROOT, 'assets/guides', g.file))) throw new Error(`guide PDF missing: ${g.file} (run bash tools/make-guides.sh)`);
+add({ route: 'guides/', key: 'guides', nav: 'guides', title: `Free Marketing Guides for Education & Travel Brands | ${NAME}`,
+  description: 'Free downloadable guides: the Meta Ads Playbook for Education Brands and the Umrah Season Campaign Checklist. Practical, step-by-step and free.',
+  content: `<section class="page active" id="page-guides">${pageHero('Free guides', 'Free playbooks for growing brands.', 'Step-by-step guides from the accounts we run. Enter your email and the PDF is yours. No spam; unsubscribe any time.')}
+<section class="section" style="padding-top:48px"><div class="wrap"><div class="guide-grid">${guides.map(guideCard).join('')}</div>
+<p class="muted" style="text-align:center;margin-top:28px;font-size:14px">We'll occasionally email you practical marketing tips. See our <a data-nav="privacy-policy" style="text-decoration:underline">privacy policy</a>.</p></div></section>
+${ctaBand}</section>`,
+  crumbs: [['Free guides', 'guides/']] });
+
+// ---------- Blog ----------
+const postImg = p => p.cover ? `blog-${p.slug}.webp` : p.img;
+const fmtDate = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const postMeta = p => `<div class="blog-meta"><span>By The Kaizen Agency</span><span class="dotsep"></span><span>${fmtDate(p.date)}</span><span class="dotsep"></span><span>${p.readMins} min read</span></div>`;
+const postCard = p => `<a class="post reveal" data-nav="blog/${p.slug}"><div class="post-img"><span class="cat">${p.category}</span><img src="{{BASE}}assets/img/${postImg(p)}" alt="" loading="lazy" width="900" height="563"></div><div class="post-body"><h3>${p.title}</h3><p>${p.excerpt}</p><span class="post-link">Read article ${arrow}</span></div></a>`;
+const guidePromo = p => { const g = p.industry === 'umrah-travel-agencies' ? guides[1] : (p.industry === 'study-abroad-consultants' || p.category === 'Meta Ads') ? guides[0] : null; return g ? `<div class="guide-promo"><div><span>Free ${g.kicker.split(' ·')[0].toLowerCase()}</span><b>${g.title}</b></div><a class="btn btn-primary" data-nav="guides">Get it free ${arrow}</a></div>` : ''; };
+const featuredPost = posts.find(p => p.featured) || posts[0];
+const blogFeatured = `<a class="blog-featured reveal" data-nav="blog/${featuredPost.slug}"><div class="bf-media"><span class="badge">Featured</span><img src="{{BASE}}assets/img/${postImg(featuredPost)}" alt="" loading="lazy"></div><div class="bf-body"><span class="cat">${featuredPost.category}</span><h3>${featuredPost.title}</h3><p>${featuredPost.excerpt}</p>${postMeta(featuredPost)}<span class="btn btn-primary">Read the playbook ${arrow}</span></div></a>`;
+const blogGrid = posts.filter(p => p !== featuredPost).map(postCard).join('');
+for (const p of posts) {
+  if (!fs.existsSync(path.join(ROOT, 'assets/img', postImg(p)))) throw new Error(`posts.mjs: image missing for ${p.slug} (run python tools/make-covers.py)`);
+  const related = [...posts.filter(o => o !== p && o.industry && o.industry === p.industry), ...posts.filter(o => o !== p && !(o.industry && o.industry === p.industry))].slice(0, 3);
+  const content = `<section class="page active" id="page-post"><div class="page-hero article-hero"><div class="orb-wrap"><span class="orb orb-1"></span><span class="orb orb-2"></span></div><div class="grid-overlay"></div><div class="wrap reveal"><div class="eyebrow" style="justify-content:center"><span class="dot"></span>${p.category}</div><h1>${p.title}</h1>${postMeta(p)}</div></div>
+<section class="section" style="padding-top:40px"><div class="wrap"><figure class="article-cover reveal"><img src="{{BASE}}assets/img/${postImg(p)}" alt="" width="1200" height="750"></figure><article class="article reveal">${p.body}${guidePromo(p)}</article></div></section>
+<section class="section" style="padding-top:0"><div class="wrap">${sectionHead('Keep reading', 'More from the Kaizen Journal.')}<div class="blog-grid">${related.map(postCard).join('')}</div></div></section>
+${ctaBand}</section>`;
+  add({ route: `blog/${p.slug}/`, key: 'post', nav: 'blog', title: `${p.title} | ${NAME}`, description: p.metaDescription, content,
+    ogImage: p.cover ? `assets/img/blog-${p.slug}.jpg` : undefined, ogType: 'article',
+    crumbs: [['Blog', 'blog/'], [p.title, `blog/${p.slug}/`]],
+    schema: { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: p.title, description: p.metaDescription, datePublished: p.date, dateModified: p.date,
+      image: SITE + '/assets/img/' + postImg(p), author: { '@type': 'Organization', name: NAME, url: SITE + '/' }, publisher: { '@type': 'Organization', name: NAME },
+      mainEntityOfPage: SITE + `/blog/${p.slug}/` } });
+}
+
 for (const ind of industries) {
   const ours = clients.filter(c => c.cat === ind.clientCat);
+  const indPosts = posts.filter(p => p.industry === ind.slug);
   const content = `<section class="page active" id="page-industry">${pageHero(ind.kicker, ind.h1, ind.intro, heroActions)}
 <section class="section"><div class="wrap">${sectionHead('Sound familiar?', 'What holds growth back — and how we fix it.')}<div class="svc-grid two">${ind.pains.map(([p, f], i) => `<div class="svc reveal${i % 2 ? ' d1' : ''}"><h3>${p}</h3><p>${f}</p></div>`).join('')}</div></div></section>
 <section class="section" style="background:var(--bg-2)"><div class="wrap">${sectionHead('Our playbook', 'What we run for you.')}<div class="playbook">${ind.playbook.map(([t, d], i) => `<div class="pb-item reveal"><div class="n">${String(i + 1).padStart(2, '0')}</div><div><h3>${t}</h3><p>${d}</p></div></div>`).join('')}</div></div></section>
 <section class="section"><div class="wrap">${sectionHead('Trusted in this industry', 'Brands we work with.')}<div class="chip-row reveal">${ours.map(c => `<a class="chip-link" data-nav="${c.caseStudy && c.caseStudy.published ? 'portfolio/' + c.slug : 'portfolio'}">${esc(c.name)}</a>`).join('')}</div>
 <div class="svc-grid" style="margin-top:56px">${['meta-ads', 'google-ads', 'lead-generation'].map(k => svcCard(svcBySlug[k])).join('')}</div></div></section>
+${indPosts.length ? `<section class="section" style="padding-top:0"><div class="wrap">${sectionHead('From the Kaizen Journal', 'Guides for your industry.')}<div class="blog-grid">${indPosts.map(postCard).join('')}</div></div></section>` : ''}
 ${faqSection(ind.faqs)}
 ${ctaBand}</section>`;
   add({ route: `industries/${ind.slug}/`, key: 'industry', nav: 'services', title: `${ind.title} | ${NAME}`,
@@ -200,6 +249,9 @@ const clientConfig = { formspree: cfg.formspreeEndpoint || '', booking: cfg.book
 const STEPS = [['Pick a time', 'Choose any free 30-minute slot in our calendar.'], ['Audit call on Google Meet', 'We review your ads, funnel and cost per lead with you, live.'], ['Leave with a plan', 'You get the top 3 fixes in writing, whether or not you hire us.']];
 const bookSteps = (cls = '') => `<ol class="cta-steps${cls}" aria-label="What happens after you book">${STEPS.map(([t, d], i) => `<li><span class="n">${i + 1}</span><div><b>${t}</b><span>${d}</span></div></li>`).join('')}</ol>`;
 
+const ver = f => crypto.createHash('md5').update(fs.readFileSync(path.join(ROOT, f))).digest('hex').slice(0, 8);
+const V_CSS = ver('css/style.css'), V_JS = ver('js/site.js');
+
 function render(p, baseOverride) {
   const depth = p.route.split('/').filter(Boolean).length;
   const BASE = baseOverride ?? '../'.repeat(depth);
@@ -209,6 +261,7 @@ function render(p, baseOverride) {
   const fs_ = faqSchema(p.content); if (fs_) schemas.push(fs_);
   p = { ...p, content: p.content
     .replace(/(<div class="cta-band[\s\S]*?<div class="row">[\s\S]*?<\/div>)/g, '$1' + bookSteps())
+    .replace('{{BLOG_FEATURED}}', blogFeatured).replace('{{BLOG_GRID}}', blogGrid)
     .replace('{{BOOK_STEPS}}', `<div class="book-steps reveal"><h2 class="h-md">What happens after you book</h2>${bookSteps(' light')}<a class="btn btn-primary" data-nav="contact">Pick a time ${arrow}</a></div>`) };
   if (p.schema) schemas.push(p.schema);
   let head = '';
@@ -229,8 +282,10 @@ function render(p, baseOverride) {
     .replaceAll('{{DESCRIPTION}}', esc(p.description))
     .replaceAll('{{ROBOTS}}', p.robots)
     .replaceAll('{{CANONICAL}}', canonical)
-    .replaceAll('{{OG_IMAGE}}', SITE + '/assets/img/og-image.jpg')
+    .replaceAll('{{OG_IMAGE}}', SITE + '/' + (p.ogImage || 'assets/img/og-image.jpg'))
+    .replace('<meta property="og:type" content="website">', `<meta property="og:type" content="${p.ogType || 'website'}">`)
     .replaceAll('{{PAGE}}', p.key)
+    .replace('{{V_CSS}}', V_CSS).replace('{{V_JS}}', V_JS)
     .replaceAll('{{BASE}}', BASE);
 
   if (trackingOn) html = html.replace('<a data-nav="privacy-policy">Privacy Policy</a>', '<a data-nav="privacy-policy">Privacy Policy</a><button type="button" class="link-btn" data-cookie-settings>Cookie settings</button>');
@@ -277,7 +332,7 @@ write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`)
 if (cfg.customDomain) write('CNAME', cfg.customDomain + '\n');
 write('.nojekyll', '');
 
-for (const dir of ['css', 'assets/img', 'assets/logos']) {
+for (const dir of ['css', 'assets/img', 'assets/logos', 'assets/guides']) {
   if (fs.existsSync(path.join(ROOT, dir))) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 }
 fs.mkdirSync(path.join(OUT, 'js'), { recursive: true });
