@@ -1,0 +1,32 @@
+{
+  "_help": "Edit these values, then run: node build.mjs. Empty values are switched off.",
+
+  "siteName": "The Digital Kaizen",
+  "siteUrl": "https://thekaizenagency.com",
+  "customDomain": "",
+  "githubPagesPath": "/Kaizen/",
+
+  "email": "thedigitalkaizen@gmail.com",
+  "phone": "+91 76664 59020",
+  "whatsappNumber": "917666459020",
+
+  "formspreeEndpoint": "https://formspree.io/f/xdenonkq",
+
+  "_tracking": "GA4 id looks like G-XXXXXXX, Meta Pixel id is a 15-16 digit number, Clarity id is ~10 letters/numbers",
+  "ga4Id": "",
+  "metaPixelId": "",
+  "clarityId": "",
+
+  "_booking": "Calendly link (e.g. https://calendly.com/yourname/strategy-call) opens as a popup. Any other link (e.g. Cal.com) opens in a new tab. Empty = buttons go to the contact page.",
+  "bookingUrl": "",
+
+  "_search": "From Google Search Console > Add property > HTML tag: paste only the content=\"...\" value",
+  "googleSiteVerification": "",
+
+  "social": {
+    "instagram": "",
+    "linkedin": "",
+    "x": "",
+    "youtube": ""
+  }
+}

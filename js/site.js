@@ -4,11 +4,58 @@
 var $=function(s,c){return (c||document).querySelector(s)};
 var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s))};
 
-/* Lead notifications: create a free form at https://formspree.io connected
-   to info.thedigitalkaizen@gmail.com, then paste its endpoint below —
-   it's the only edit needed to make all three forms on the site deliver
-   leads to that inbox. */
-var FORMSPREE_ENDPOINT='https://formspree.io/f/xdenonkq';
+/* Settings come from src/site.config.json (injected by build.mjs as window.KAIZEN). */
+var CFG=window.KAIZEN||{};
+var FORMSPREE_ENDPOINT=CFG.formspree||'';
+
+/* ---------- OLD #HASH LINKS → REAL PAGES ---------- */
+(function(){
+  var h=(location.hash||'').replace('#','');
+  if(document.documentElement.getAttribute('data-page')==='home'&&/^(about|services|portfolio|blog|contact)$/.test(h)){
+    location.replace(h+'/');
+  }
+})();
+
+/* ---------- CONVERSION TRACKING (GA4 + Meta Pixel + Clarity, whichever are installed) ---------- */
+function track(name,params,fbEvent){
+  params=params||{};
+  try{if(window.gtag)window.gtag('event',name,params);}catch(e){}
+  try{if(window.fbq&&fbEvent)window.fbq('track',fbEvent,params);}catch(e){}
+  try{if(window.clarity)window.clarity('event',name);}catch(e){}
+}
+document.addEventListener('click',function(e){
+  var a=e.target.closest('a');if(!a)return;
+  var href=a.getAttribute('href')||'';
+  var where={link_location:a.closest('footer')?'footer':a.closest('.floaties')?'floating_button':a.closest('header,.drawer')?'header':'page'};
+  if(href.indexOf('wa.me/')>-1||href.indexOf('api.whatsapp.com')>-1)track('contact_whatsapp',where,'Contact');
+  else if(href.indexOf('tel:')===0)track('contact_phone',where,'Contact');
+  else if(href.indexOf('mailto:')===0)track('contact_email',where,'Contact');
+});
+
+/* ---------- BOOKING (Calendly popup, other links in a new tab, or fall back to the contact page) ---------- */
+var calendlyLoading=false;
+function openCalendly(){
+  if(window.Calendly){window.Calendly.initPopupWidget({url:CFG.booking});return;}
+  if(calendlyLoading)return;calendlyLoading=true;
+  var css=document.createElement('link');css.rel='stylesheet';css.href='https://assets.calendly.com/assets/external/widget.css';document.head.appendChild(css);
+  var s=document.createElement('script');s.src='https://assets.calendly.com/assets/external/widget.js';s.async=true;
+  s.onload=function(){calendlyLoading=false;window.Calendly.initPopupWidget({url:CFG.booking});};
+  s.onerror=function(){calendlyLoading=false;window.open(CFG.booking,'_blank','noopener');};
+  document.head.appendChild(s);
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-book]');if(!b)return;
+  track('book_call_click',{link_location:b.closest('header,.drawer')?'header':'page'});
+  if(!CFG.booking)return; /* no booking link configured: normal link to the contact page */
+  e.preventDefault();
+  if(/calendly\.com\//.test(CFG.booking))openCalendly();
+  else window.open(CFG.booking,'_blank','noopener');
+});
+window.addEventListener('message',function(e){
+  if(e.origin==='https://calendly.com'&&e.data&&e.data.event==='calendly.event_scheduled'){
+    track('schedule_call',{method:'calendly'},'Schedule');
+  }
+});
 
 /* ---------- THEME ---------- */
 var root=document.documentElement;
@@ -27,31 +74,10 @@ function setDrawer(o){if(!drawer)return;drawer.classList.toggle('open',o);if(bur
 if(burger)burger.addEventListener('click',function(){setDrawer(!drawer.classList.contains('open'))});
 var dc=$('#drawerClose');if(dc)dc.addEventListener('click',function(){setDrawer(false)});
 
-/* ---------- PAGE ROUTER ---------- */
-var pages=$$('.page');
-function go(name,noScroll){
-  var target=$('#page-'+name);if(!target)name='home',target=$('#page-home');
-  pages.forEach(function(p){p.classList.toggle('active',p===target)});
-  $$('[data-nav]').forEach(function(l){l.classList.toggle('active',l.getAttribute('data-nav')===name)});
-  setDrawer(false);
-  if(!noScroll)window.scrollTo({top:0,behavior:'auto'});
-  try{history.replaceState(null,'','#'+name);}catch(e){}
-  runReveal();runCounters();
-  document.title=titles[name]||titles.home;
-}
-var titles={
-  home:'The Digital Kaizen | Performance Marketing & Digital Growth Agency',
-  about:'About | The Digital Kaizen',
-  services:'Services | The Digital Kaizen',
-  portfolio:'Portfolio & Case Studies | The Digital Kaizen',
-  contact:'Contact | The Digital Kaizen',
-  blog:'The Kaizen Journal | The Digital Kaizen'
-};
-document.addEventListener('click',function(e){
-  var l=e.target.closest('[data-nav]');if(!l)return;
-  e.preventDefault();go(l.getAttribute('data-nav'));
-});
-window.addEventListener('load',function(){var h=(location.hash||'').replace('#','');go(h||'home',true);});
+/* ---------- PAGES ---------- */
+/* Each page is now its own HTML file (built by build.mjs), so links are normal links. */
+function startPage(){runReveal();runCounters();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startPage);else startPage();
 
 /* ---------- REVEAL ---------- */
 var io;
@@ -210,6 +236,9 @@ $$('form[data-ok]').forEach(function(f){
     fetch(FORMSPREE_ENDPOINT,{method:'POST',body:data,headers:{'Accept':'application/json'}})
       .then(function(res){
         if(!res.ok)throw new Error('Request failed');
+        var src=f.getAttribute('data-source')||'website';
+        if(/newsletter/i.test(src))track('sign_up',{method:'newsletter'},'Subscribe');
+        else track('generate_lead',{form_name:src},'Lead');
         if(ok)ok.classList.add('show');
         f.reset();
         if(f.closest('.modal'))setTimeout(hideModal,1400);
