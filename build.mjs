@@ -217,7 +217,7 @@ ${ctaBand}</section>`;
 // ---------- head extras ----------
 const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'],
   description: 'Performance marketing agency specialising in Meta Ads, Google Ads, SEO, lead generation and AI automation.',
-  url: SITE + '/', image: SITE + '/assets/img/og-image.jpg', telephone: cfg.phone, email: cfg.email, priceRange: '₹₹',
+  url: SITE + '/', logo: SITE + '/assets/brand/symbol-color.svg', image: SITE + '/assets/img/og-image.jpg', telephone: cfg.phone, email: cfg.email, priceRange: '₹₹',
   address: { '@type': 'PostalAddress', addressLocality: 'Mumbai', addressRegion: 'Maharashtra', addressCountry: 'IN' },
   areaServed: ['India', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Bahrain', 'Oman'],
   knowsAbout: services.map(s => s.title),
@@ -332,7 +332,7 @@ write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`)
 if (cfg.customDomain) write('CNAME', cfg.customDomain + '\n');
 write('.nojekyll', '');
 
-for (const dir of ['css', 'assets/img', 'assets/logos', 'assets/guides']) {
+for (const dir of ['css', 'assets/img', 'assets/logos', 'assets/guides', 'assets/icons', 'assets/brand']) {
   if (fs.existsSync(path.join(ROOT, dir))) fs.cpSync(path.join(ROOT, dir), path.join(OUT, dir), { recursive: true });
 }
 fs.mkdirSync(path.join(OUT, 'js'), { recursive: true });
