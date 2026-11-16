@@ -114,6 +114,18 @@
 </div>
 
 <!-- EXIT INTENT MODAL -->
+<!-- BOOKING POPUP (Google Calendar appointment page; filled in by site.js) -->
+<div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+  <div class="modal booking-modal">
+    <div class="booking-head">
+      <div><h3 id="bookingTitle">Book your free strategy call</h3><p>30 minutes on Google Meet · pick a time that suits you</p></div>
+      <button class="booking-close" id="bookingClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+    </div>
+    <div class="booking-frame"><div class="booking-loading">Loading available times…</div><iframe id="bookingFrame" title="Book a strategy call" frameborder="0"></iframe></div>
+    <a class="booking-fallback" id="bookingFallback" target="_blank" rel="noopener">Trouble loading? Open the booking page in a new tab ↗</a>
+  </div>
+</div>
+
 <div class="modal-overlay" id="exitModal">
   <div class="modal">
     <button class="modal-close" id="modalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>

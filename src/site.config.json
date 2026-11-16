@@ -17,8 +17,8 @@
   "metaPixelId": "",
   "clarityId": "",
 
-  "_booking": "Calendly link (e.g. https://calendly.com/yourname/strategy-call) opens as a popup. Any other link (e.g. Cal.com) opens in a new tab. Empty = buttons go to the contact page.",
-  "bookingUrl": "",
+  "_booking": "Google Calendar appointment page (long calendar.google.com link, opens as a popup on the site; short link: https://calendar.app.google/VWGDVKbRjunMm8sZA). A Calendly link also opens as a popup. Any other link opens in a new tab. Empty = buttons go to the contact page.",
+  "bookingUrl": "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0IDO6kzPcJTnAvSafvCceTOrIcq8xVDPW50cukAOkh2Q28PczfY1dVNpHPyn12HTmLBEr_JVqA",
 
   "_search": "From Google Search Console > Add property > HTML tag: paste only the content=\"...\" value",
   "googleSiteVerification": "",

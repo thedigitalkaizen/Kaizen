@@ -24,7 +24,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thekaizenagency.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://thekaizenagency.com/services/"},{"@type":"ListItem","position":3,"name":"Web Design","item":"https://thekaizenagency.com/services/web-design/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How long does a website take?","acceptedAnswer":{"@type":"Answer","text":"A focused landing page takes about a week; a full site usually 3–5 weeks."}},{"@type":"Question","name":"Can I edit it myself?","acceptedAnswer":{"@type":"Answer","text":"Yes. We can set up a simple editor so your team can update text and blog posts."}},{"@type":"Question","name":"Do you handle hosting and domain?","acceptedAnswer":{"@type":"Answer","text":"We set it up for you and you keep full ownership of the domain and accounts."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Web Design","serviceType":"Web Design","description":"Conversion-focused web design and landing pages. Fast, mobile-first websites with tracking, WhatsApp and booking built in.","provider":{"@type":"ProfessionalService","name":"The Digital Kaizen","url":"https://thekaizenagency.com/"},"areaServed":["India","Bahrain","United Arab Emirates","Saudi Arabia"]}</script>
-<script>window.KAIZEN={"formspree":"https://formspree.io/f/xdenonkq","booking":""};</script>
+<script>window.KAIZEN={"formspree":"https://formspree.io/f/xdenonkq","booking":"https://calendar.google.com/calendar/appointments/schedules/AcZssZ0IDO6kzPcJTnAvSafvCceTOrIcq8xVDPW50cukAOkh2Q28PczfY1dVNpHPyn12HTmLBEr_JVqA"};</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -122,6 +122,18 @@
 </div>
 
 <!-- EXIT INTENT MODAL -->
+<!-- BOOKING POPUP (Google Calendar appointment page; filled in by site.js) -->
+<div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+  <div class="modal booking-modal">
+    <div class="booking-head">
+      <div><h3 id="bookingTitle">Book your free strategy call</h3><p>30 minutes on Google Meet · pick a time that suits you</p></div>
+      <button class="booking-close" id="bookingClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+    </div>
+    <div class="booking-frame"><div class="booking-loading">Loading available times…</div><iframe id="bookingFrame" title="Book a strategy call" frameborder="0"></iframe></div>
+    <a class="booking-fallback" id="bookingFallback" target="_blank" rel="noopener">Trouble loading? Open the booking page in a new tab ↗</a>
+  </div>
+</div>
+
 <div class="modal-overlay" id="exitModal">
   <div class="modal">
     <button class="modal-close" id="modalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>

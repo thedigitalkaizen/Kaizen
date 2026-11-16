@@ -24,7 +24,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://thekaizenagency.com/"},{"@type":"ListItem","position":2,"name":"Services","item":"https://thekaizenagency.com/services/"},{"@type":"ListItem","position":3,"name":"AI Automation","item":"https://thekaizenagency.com/services/ai-automation/"}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Which tools do you use?","acceptedAnswer":{"@type":"Answer","text":"We work with your existing CRM where possible, plus WhatsApp Business API, Zapier/Make and AI assistants."}},{"@type":"Question","name":"Will it sound robotic?","acceptedAnswer":{"@type":"Answer","text":"No. We write replies in your brand voice and hand over to a human as soon as the lead is ready."}},{"@type":"Question","name":"Is lead data safe?","acceptedAnswer":{"@type":"Answer","text":"Data stays in your own accounts. We set up access so you stay in control."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"AI Automation","serviceType":"AI Automation","description":"AI and marketing automation: instant lead follow-up on WhatsApp and email, CRM routing, chatbots and automated reporting.","provider":{"@type":"ProfessionalService","name":"The Digital Kaizen","url":"https://thekaizenagency.com/"},"areaServed":["India","Bahrain","United Arab Emirates","Saudi Arabia"]}</script>
-<script>window.KAIZEN={"formspree":"https://formspree.io/f/xdenonkq","booking":""};</script>
+<script>window.KAIZEN={"formspree":"https://formspree.io/f/xdenonkq","booking":"https://calendar.google.com/calendar/appointments/schedules/AcZssZ0IDO6kzPcJTnAvSafvCceTOrIcq8xVDPW50cukAOkh2Q28PczfY1dVNpHPyn12HTmLBEr_JVqA"};</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -122,6 +122,18 @@
 </div>
 
 <!-- EXIT INTENT MODAL -->
+<!-- BOOKING POPUP (Google Calendar appointment page; filled in by site.js) -->
+<div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle">
+  <div class="modal booking-modal">
+    <div class="booking-head">
+      <div><h3 id="bookingTitle">Book your free strategy call</h3><p>30 minutes on Google Meet · pick a time that suits you</p></div>
+      <button class="booking-close" id="bookingClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>
+    </div>
+    <div class="booking-frame"><div class="booking-loading">Loading available times…</div><iframe id="bookingFrame" title="Book a strategy call" frameborder="0"></iframe></div>
+    <a class="booking-fallback" id="bookingFallback" target="_blank" rel="noopener">Trouble loading? Open the booking page in a new tab ↗</a>
+  </div>
+</div>
+
 <div class="modal-overlay" id="exitModal">
   <div class="modal">
     <button class="modal-close" id="modalClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></button>

@@ -550,3 +550,22 @@ a.chip-link:hover{border-color:var(--royal);color:var(--royal)}
   .logo span{white-space:nowrap}
   .floaties{bottom:16px;right:14px}
 }
+
+/* ============ BOOKING POPUP ============ */
+.booking-modal{max-width:880px;height:min(86vh,760px);display:flex;flex-direction:column}
+.booking-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px 26px;background:var(--navy);color:#fff}
+.booking-head h3{color:#fff;font-size:1.3rem;margin-bottom:4px}
+.booking-head p{color:rgba(246,248,252,.7);font-size:14px}
+.booking-close{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#fff;border:0;cursor:pointer}
+.booking-close:hover{background:rgba(255,255,255,.2)}
+.booking-close svg{width:18px;height:18px}
+.booking-frame{position:relative;flex:1;background:#fff}
+.booking-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.booking-loading{position:absolute;inset:0;display:grid;place-items:center;color:#5B6480;font-size:15px}
+.booking-fallback{display:block;text-align:center;padding:12px;font-size:13px;color:var(--muted);border-top:1px solid var(--line)}
+.booking-fallback:hover{color:var(--royal)}
+@media(max-width:680px){
+  #bookingModal{padding:0}
+  .booking-modal{height:100%;max-width:none;border-radius:0}
+  .booking-head{padding:16px 18px}
+}

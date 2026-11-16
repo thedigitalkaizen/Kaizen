@@ -32,7 +32,31 @@ document.addEventListener('click',function(e){
   else if(href.indexOf('mailto:')===0)track('contact_email',where,'Contact');
 });
 
-/* ---------- BOOKING (Calendly popup, other links in a new tab, or fall back to the contact page) ---------- */
+/* ---------- BOOKING (Google Calendar or Calendly popup, other links in a new tab, or fall back to the contact page) ---------- */
+var bm=document.getElementById('bookingModal');
+function isGoogleBooking(u){return /^https:\/\/(calendar\.google\.com\/calendar\/appointments\/|calendar\.app\.google\/)/.test(u||'');}
+function googleEmbedUrl(u){
+  if(!/calendar\.google\.com\/calendar\/appointments\//.test(u))return u; /* short links can't take the embed flag */
+  return u+(u.indexOf('?')>-1?'&':'?')+'gv=true';
+}
+function openGoogleBooking(){
+  if(!bm){window.open(CFG.booking,'_blank','noopener');return;}
+  var fr=document.getElementById('bookingFrame');
+  if(!fr.getAttribute('src')){ /* load only on first open */
+    fr.addEventListener('load',function(){var l=bm.querySelector('.booking-loading');if(l)l.style.display='none';},{once:true});
+    fr.setAttribute('src',googleEmbedUrl(CFG.booking));
+  }
+  document.getElementById('bookingFallback').setAttribute('href',CFG.booking);
+  bm.classList.add('open');document.body.style.overflow='hidden';
+  var c=document.getElementById('bookingClose');if(c)c.focus();
+}
+function closeBooking(){if(bm&&bm.classList.contains('open')){bm.classList.remove('open');document.body.style.overflow='';}}
+if(bm){
+  document.getElementById('bookingClose').addEventListener('click',closeBooking);
+  bm.addEventListener('click',function(e){if(e.target===bm)closeBooking();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeBooking();});
+  document.getElementById('bookingFallback').addEventListener('click',function(){track('booking_new_tab',{});});
+}
 var calendlyLoading=false;
 function openCalendly(){
   if(window.Calendly){window.Calendly.initPopupWidget({url:CFG.booking});return;}
@@ -48,7 +72,8 @@ document.addEventListener('click',function(e){
   track('book_call_click',{link_location:b.closest('header,.drawer')?'header':'page'});
   if(!CFG.booking)return; /* no booking link configured: normal link to the contact page */
   e.preventDefault();
-  if(/calendly\.com\//.test(CFG.booking))openCalendly();
+  if(isGoogleBooking(CFG.booking))openGoogleBooking();
+  else if(/calendly\.com\//.test(CFG.booking))openCalendly();
   else window.open(CFG.booking,'_blank','noopener');
 });
 window.addEventListener('message',function(e){
