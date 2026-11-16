@@ -57,9 +57,10 @@ function portCard(c) {
   const link = c.caseStudy && c.caseStudy.published ? `<a class="port-link" data-nav="portfolio/${c.slug}">Read case study ${arrow}</a>` : '';
   return `<div class="port client-card reveal" data-cat="${c.cat}"><div class="client-top"><div class="client-mark ${catColor[c.cat] || 'ic-royal'}${c.logo ? ' has-logo' : ''}">${mark}</div><div><h3>${esc(c.name)}</h3><span class="client-cat">${c.catL}</span></div></div><p>${esc(c.desc)}</p>${metric}${link}</div>`;
 }
+const COUNTRIES = ["India", "Saudi Arabia", "UAE", "Qatar", "Bahrain", "Oman"];
 function portSummary() {
   const inds = [...new Set(clients.map(c => c.catL))];
-  return `<div class="port-summary reveal"><div><b>${clients.length}</b><span>brands</span></div><div><b>${inds.length}</b><span>industries</span></div><div><b>6</b><span>countries: India, KSA, UAE, Qatar, Bahrain &amp; Oman</span></div></div>`;
+  return `<div class="port-summary reveal"><div class="ps-stats"><div><b>${clients.length}</b><span>Brands</span></div><div><b>${inds.length}</b><span>Industries</span></div><div><b>${COUNTRIES.length}</b><span>Countries</span></div></div><div class="ps-countries">${COUNTRIES.map(c => `<span>${c}</span>`).join("")}</div></div>`;
 }
 
 // ---------- page definitions ----------
