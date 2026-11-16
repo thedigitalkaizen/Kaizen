@@ -56,11 +56,11 @@ function portCard(c) {
 const pages = [];
 const add = p => pages.push({ robots: 'index, follow', ...p });
 
-add({ route: '', key: 'home', nav: 'home', title: `${NAME} | Performance Marketing & Digital Growth Agency`,
-  description: 'Kaizen is a performance marketing agency for Meta Ads, Google Ads, SEO, lead generation and AI automation — engineered for measurable, compounding growth in India and the GCC.',
+add({ route: '', key: 'home', nav: 'home', title: `${NAME} | Performance Marketing & Lead Generation in India & the GCC`,
+  description: 'The Kaizen Agency is a performance marketing agency for Meta Ads, Google Ads, SEO, lead generation and AI automation — engineered for measurable, compounding growth in India and the GCC.',
   content: read('src/pages/home.html') });
 add({ route: 'about/', key: 'about', nav: 'about', title: `About Us | ${NAME}`,
-  description: 'Kaizen is a performance marketing agency built on kaizen: continuous, measured improvement for education, travel and service brands in India and the GCC.',
+  description: 'The Kaizen Agency is a performance marketing agency built on kaizen: continuous, measured improvement for education, travel and service brands in India and the GCC.',
   content: read('src/pages/about.html'), crumbs: [['About', 'about/']] });
 add({ route: 'services/', key: 'services', nav: 'services', title: `Digital Marketing Services | ${NAME}`,
   description: 'Performance marketing, Meta Ads, Google Ads, SEO, social media, web design, branding, AI automation, lead generation and CRO — run as one growth engine.',
@@ -69,13 +69,13 @@ add({ route: 'portfolio/', key: 'portfolio', nav: 'portfolio', title: `Portfolio
   description: 'Brands we work with across education, travel, training and hospitality — including Akbar Study Abroad, Akbar Umrah and Akbar Training Center Bahrain.',
   content: read('src/pages/portfolio.html').replace('{{PORTFOLIO_GRID}}', clients.map(portCard).join('')), crumbs: [['Portfolio', 'portfolio/']] });
 add({ route: 'blog/', key: 'blog', nav: 'blog', title: `The Kaizen Journal — Growth Playbooks | ${NAME}`,
-  description: 'Practical growth playbooks for Meta Ads, Google Ads, SEO, CRO and AI automation from Kaizen.',
+  description: 'Practical growth playbooks for Meta Ads, Google Ads, SEO, CRO and AI automation from The Kaizen Agency.',
   content: read('src/pages/blog.html'), crumbs: [['Blog', 'blog/']] });
 add({ route: 'contact/', key: 'contact', nav: 'contact', title: `Contact & Free Strategy Call | ${NAME}`,
-  description: 'Book a free 30-minute strategy call with Kaizen, or message us on WhatsApp. A senior strategist replies within one business day.',
+  description: 'Book a free 30-minute strategy call with The Kaizen Agency, or message us on WhatsApp. A senior strategist replies within one business day.',
   content: read('src/pages/contact.html'), crumbs: [['Contact', 'contact/']] });
 add({ route: 'privacy-policy/', key: 'privacy', nav: 'privacy-policy', title: `Privacy Policy | ${NAME}`,
-  description: 'How Kaizen collects, uses and protects information submitted through this website.',
+  description: 'How The Kaizen Agency collects, uses and protects information submitted through this website.',
   content: read('src/pages/privacy-policy.html'), crumbs: [['Privacy Policy', 'privacy-policy/']] });
 
 for (const s of services) {
@@ -92,7 +92,7 @@ ${ctaBand}</section>`;
   add({ route: `services/${s.slug}/`, key: 'service', nav: 'services', title: `${s.title} Agency in India & the GCC | ${NAME}`,
     description: s.metaDescription, content, crumbs: [['Services', 'services/'], [s.title, `services/${s.slug}/`]],
     schema: { '@context': 'https://schema.org', '@type': 'Service', name: s.title, serviceType: s.title, description: s.metaDescription,
-      provider: { '@type': 'ProfessionalService', name: NAME, alternateName: 'Kaizen Agency', url: SITE + '/' }, areaServed: ['India', 'Bahrain', 'United Arab Emirates', 'Saudi Arabia'] } });
+      provider: { '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'], url: SITE + '/' }, areaServed: ['India', 'Bahrain', 'United Arab Emirates', 'Saudi Arabia'] } });
 }
 
 const svcBySlug = Object.fromEntries(services.map(s => [s.slug, s]));
@@ -123,12 +123,12 @@ ${results}
 ${quote}
 ${ctaBand}</section>`;
   add({ route: `portfolio/${c.slug}/`, key: 'case', nav: 'portfolio', title: `${c.name} Case Study | ${NAME}`,
-    description: `How Kaizen helped ${c.name}: ${cs.challenge.slice(0, 110)}`, content,
+    description: `How The Kaizen Agency helped ${c.name}: ${cs.challenge.slice(0, 110)}`, content,
     crumbs: [['Portfolio', 'portfolio/'], [c.name, `portfolio/${c.slug}/`]] });
 }
 
 // ---------- head extras ----------
-const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: NAME, alternateName: 'Kaizen Agency',
+const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'],
   description: 'Performance marketing agency specialising in Meta Ads, Google Ads, SEO, lead generation and AI automation.',
   url: SITE + '/', image: SITE + '/assets/img/og-image.jpg', telephone: cfg.phone, email: cfg.email, priceRange: '₹₹',
   address: { '@type': 'PostalAddress', addressLocality: 'Mumbai', addressRegion: 'Maharashtra', addressCountry: 'IN' },

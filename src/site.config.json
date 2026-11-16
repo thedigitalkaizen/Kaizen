@@ -1,7 +1,7 @@
 {
   "_help": "Edit these values, then run: node build.mjs. Empty values are switched off.",
 
-  "siteName": "Kaizen",
+  "siteName": "The Kaizen Agency",
   "siteUrl": "https://thekaizenagency.com",
   "customDomain": "",
   "githubPagesPath": "/Kaizen/",

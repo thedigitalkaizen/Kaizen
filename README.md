@@ -1,4 +1,4 @@
-# Kaizen — website
+# The Kaizen Agency — website
 
 Static website hosted free on GitHub Pages. Each page is a real HTML file, so Google can index it.
 

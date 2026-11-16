@@ -1,4 +1,4 @@
-/* ============ KAIZEN — SITE JS ============ */
+/* ============ THE KAIZEN AGENCY — SITE JS ============ */
 (function(){
 'use strict';
 var $=function(s,c){return (c||document).querySelector(s)};
@@ -255,7 +255,7 @@ $$('form[data-ok]').forEach(function(f){
     }
 
     var data=new FormData(f);
-    data.set('_subject','New lead — '+(f.getAttribute('data-source')||'Kaizen website'));
+    data.set('_subject','New lead — '+(f.getAttribute('data-source')||'The Kaizen Agency website'));
 
     if(btn){btn.disabled=true;btn.innerHTML='Sending…';}
     fetch(FORMSPREE_ENDPOINT,{method:'POST',body:data,headers:{'Accept':'application/json'}})
