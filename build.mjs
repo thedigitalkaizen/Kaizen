@@ -59,10 +59,47 @@ function portCard(c) {
   const link = c.caseStudy && c.caseStudy.published ? `<a class="port-link" data-nav="portfolio/${c.slug}">Read case study ${arrow}</a>` : '';
   return `<div class="port client-card reveal" data-cat="${c.cat}"><div class="client-top"><div class="client-mark ${catColor[c.cat] || 'ic-royal'}${c.logo ? ' has-logo' : ''}">${mark}</div><div><h3>${esc(c.name)}</h3><span class="client-cat">${c.catL}</span></div></div><p>${esc(c.desc)}</p>${metric}${link}</div>`;
 }
+const heroProof = () => `<p class="hero-proof reveal d3 in"><span class="hp-dots">${clients.slice(0, 3).map(c => `<i class="${catColor[c.cat] || 'ic-royal'}">${esc(c.ini)}</i>`).join('')}</span><span>Working with <b>${esc(clients[0].name)}</b>, <b>${esc(clients[7] ? clients[7].name : clients[1].name)}</b> and ${clients.length - 2} more brands across India &amp; the GCC</span></p>`;
 const COUNTRIES = ["India", "Saudi Arabia", "UAE", "Qatar", "Bahrain", "Oman"];
 function portSummary() {
   const inds = [...new Set(clients.map(c => c.catL))];
   return `<div class="port-summary reveal"><div class="ps-stats"><div><b>${clients.length}</b><span>Brands</span></div><div><b>${inds.length}</b><span>Industries</span></div><div><b>${COUNTRIES.length}</b><span>Countries</span></div></div><div class="ps-countries">${COUNTRIES.map(c => `<span>${c}</span>`).join("")}</div></div>`;
+}
+
+// ---------- testimonials (shows on the home page once any client in clients.mjs has quote + quoteBy) ----------
+function testimonials() {
+  const q = clients.filter(c => c.quote && c.quoteBy);
+  if (!q.length) return '';
+  return `<section class="section"><div class="wrap">${sectionHead('In their words', 'What our clients say.')}<div class="svc-grid">${q.map((c, i) => `<blockquote class="case-quote reveal${i % 3 ? ' d' + (i % 3) : ''}"><p>“${esc(c.quote)}”</p><cite>${esc(c.quoteBy)} · ${esc(c.name)}</cite></blockquote>`).join('')}</div></div></section>`;
+}
+
+// ---------- ad landing pages: one per industry, no menu, one goal ----------
+function landingPage(ind) {
+  const ours = clients.filter(c => c.cat === ind.clientCat);
+  const wa = `https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hi Kaizen team, I want a free audit for my ' + ind.navTitle.toLowerCase().replace(/s$/, '') + ' business')}`;
+  const tel = 'tel:' + String(cfg.phone).replace(/[^+0-9]/g, '');
+  const form = `<div class="form-card lp-form reveal in" id="lp-form"><h2 class="h-md">Get your free ad audit</h2><p class="muted lp-form-sub">30-minute call. You get the top 3 fixes in writing, whether or not you hire us.</p>
+<form data-ok="lpOk" data-source="Landing page — ${ind.navTitle}"><div class="form-ok" id="lpOk">Thanks! We’ll WhatsApp you within one business day.</div><div class="form-error" id="lpErr">Something went wrong. Please try again, or WhatsApp us.</div><input type="text" name="_gotcha" class="fld-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="industry" value="${ind.navTitle}">
+<div class="fld"><label for="lp-name">Your name</label><input id="lp-name" type="text" name="name" autocomplete="name" required></div>
+<div class="fld"><label for="lp-phone">WhatsApp number</label><input id="lp-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+91 98765 43210" pattern="[+0-9 ()-]{7,20}" title="Enter a phone number with country code, e.g. +91 98765 43210" required></div>
+<div class="fld"><label for="lp-budget">Monthly ad budget</label><select id="lp-budget" name="budget"><option>Under ₹1L</option><option>₹1L – ₹3L</option><option>₹3L – ₹10L</option><option>₹10L+</option><option>Not running ads yet</option></select></div>
+<button class="btn btn-primary btn-block btn-lg" type="submit">Get my free audit ${arrow}</button><p class="form-note">No spam. We only use your number to arrange the call.</p></form></div>`;
+  const how = [['Tell us about your business', 'Share your number and budget. We reply on WhatsApp within one business day.'], ['Free 30-minute audit call', 'We go through your ads, landing page and lead follow-up with you, live on Google Meet.'], ['Leave with a written plan', 'The top 3 fixes for your account, in writing, whether or not you hire us.']];
+  const content = `<section class="page active" id="page-lp">
+<div class="hero lp-hero"><div class="orb-wrap"><span class="orb orb-1"></span><span class="orb orb-2"></span></div><div class="grid-overlay"></div><div class="wrap"><div class="hero-grid">
+<div><div class="eyebrow reveal in"><span class="dot"></span>${ind.kicker}</div><h1 class="reveal d1 in">${ind.h1}</h1><p class="lead reveal d2 in">${ind.intro}</p>
+<ul class="check-list lp-points reveal d3 in">${ind.playbook.slice(0, 3).map(([t]) => `<li>${tick}<span>${t}</span></li>`).join('')}</ul>
+${ours.length ? `<p class="hero-proof reveal d3 in"><span class="hp-dots">${ours.slice(0, 3).map(c => `<i class="${catColor[c.cat] || 'ic-royal'}">${esc(c.ini)}</i>`).join('')}</span><span>Trusted by ${ours.map(c => `<b>${esc(c.name)}</b>`).join(', ')}</span></p>` : ''}</div>
+${form}</div></div></div>
+<section class="section"><div class="wrap">${sectionHead('Sound familiar?', 'What holds growth back, and how we fix it.')}<div class="svc-grid two">${ind.pains.map(([p, f], i) => `<div class="svc reveal${i % 2 ? ' d1' : ''}"><h3>${p}</h3><p>${f}</p></div>`).join('')}</div></div></section>
+<section class="section" style="background:var(--bg-2)"><div class="wrap">${sectionHead('How it works', 'Three steps, no obligation.')}<div class="steps lp-steps">${how.map(([t, d], i) => `<div class="step reveal${i ? ' d' + i : ''}"><div class="n">0${i + 1}</div><h3>${t}</h3><p>${d}</p></div>`).join('')}</div></div></section>
+<section class="section"><div class="wrap">${sectionHead('Our playbook', 'What we run for you.')}<div class="playbook">${ind.playbook.map(([t, d], i) => `<div class="pb-item reveal"><div class="n">${String(i + 1).padStart(2, '0')}</div><div><h3>${t}</h3><p>${d}</p></div></div>`).join('')}</div></div></section>
+${faqSection(ind.faqs)}
+<section class="section" style="padding-top:0"><div class="wrap"><div class="cta-band reveal"><span class="orb orb-1" style="background:#2F6BFF"></span><span class="orb orb-2" style="background:#7C5CFF"></span><div class="inner"><h2 class="h-lg">Ready for more serious enquiries?</h2><p>Get a free audit of your ads and lead follow-up. It takes 30 minutes.</p><div class="row"><a class="btn btn-primary btn-lg" href="#lp-form">Get my free audit ${arrow}</a><a class="btn btn-ghost btn-lg lp-wa" href="${wa}" target="_blank" rel="noopener">WhatsApp us</a></div></div></div></div></section>
+<div class="lp-sticky"><a class="lp-s-wa" href="${wa}" target="_blank" rel="noopener">WhatsApp us</a><a class="lp-s-call" href="${tel}">Call now</a><a class="lp-s-form" href="#lp-form">Free audit</a></div>
+</section>`;
+  add({ route: `lp/${ind.slug}/`, key: 'lp', nav: '', robots: 'noindex, follow', title: `Free Ad Audit for ${ind.navTitle} | ${NAME}`,
+    description: ind.metaDescription, content });
 }
 
 // ---------- page definitions ----------
@@ -71,7 +108,7 @@ const add = p => pages.push({ robots: 'index, follow', ...p });
 
 add({ route: '', key: 'home', nav: 'home', title: `${NAME} | Performance Marketing & Lead Generation in India & the GCC`,
   description: 'The Kaizen Agency is a performance marketing agency for Meta Ads, Google Ads, SEO, lead generation and AI automation — engineered for measurable, compounding growth in India and the GCC.',
-  content: read('src/pages/home.html') });
+  content: read('src/pages/home.html').replace('{{HERO_PROOF}}', heroProof()) + testimonials() });
 add({ route: 'about/', key: 'about', nav: 'about', title: `About Us | ${NAME}`,
   description: 'The Kaizen Agency is a performance marketing agency built on kaizen: continuous, measured improvement for education, travel and service brands in India and the GCC.',
   content: read('src/pages/about.html'), crumbs: [['About', 'about/']] });
@@ -162,6 +199,7 @@ const postImg = p => p.cover ? `blog-${p.slug}.webp` : p.img;
 const fmtDate = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const postMeta = p => `<div class="blog-meta"><span>By The Kaizen Agency</span><span class="dotsep"></span><span>${fmtDate(p.date)}</span><span class="dotsep"></span><span>${p.readMins} min read</span></div>`;
 const postCard = p => `<a class="post reveal" data-nav="blog/${p.slug}"><div class="post-img"><span class="cat">${p.category}</span><img src="{{BASE}}assets/img/${postImg(p)}" alt="" loading="lazy" width="900" height="563"></div><div class="post-body"><h3>${p.title}</h3><p>${p.excerpt}</p><span class="post-link">Read article ${arrow}</span></div></a>`;
+const articleCta = `<div class="article-cta"><div><h3>Want us to look at your ads?</h3><p>Book a free 30-minute audit call. You leave with the top 3 fixes for your account, whether or not you hire us.</p></div><div class="ac-actions"><a class="btn btn-primary" data-nav="contact">Book Free Strategy Call ${arrow}</a><a class="btn btn-ghost" href="https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hi Kaizen team, I read your article and want a free audit')}" target="_blank" rel="noopener">WhatsApp us</a></div></div>`;
 const guidePromo = p => { const g = p.industry === 'umrah-travel-agencies' ? guides[1] : (p.industry === 'study-abroad-consultants' || p.category === 'Meta Ads') ? guides[0] : null; return g ? `<div class="guide-promo"><div><span>Free ${g.kicker.split(' ·')[0].toLowerCase()}</span><b>${g.title}</b></div><a class="btn btn-primary" data-nav="guides">Get it free ${arrow}</a></div>` : ''; };
 const featuredPost = posts.find(p => p.featured) || posts[0];
 const blogFeatured = `<a class="blog-featured reveal" data-nav="blog/${featuredPost.slug}"><div class="bf-media"><span class="badge">Featured</span><img src="{{BASE}}assets/img/${postImg(featuredPost)}" alt="" loading="lazy"></div><div class="bf-body"><span class="cat">${featuredPost.category}</span><h3>${featuredPost.title}</h3><p>${featuredPost.excerpt}</p>${postMeta(featuredPost)}<span class="btn btn-primary">Read the playbook ${arrow}</span></div></a>`;
@@ -170,7 +208,7 @@ for (const p of posts) {
   if (!fs.existsSync(path.join(ROOT, 'assets/img', postImg(p)))) throw new Error(`posts.mjs: image missing for ${p.slug} (run python tools/make-covers.py)`);
   const related = [...posts.filter(o => o !== p && o.industry && o.industry === p.industry), ...posts.filter(o => o !== p && !(o.industry && o.industry === p.industry))].slice(0, 3);
   const content = `<section class="page active" id="page-post"><div class="page-hero article-hero"><div class="orb-wrap"><span class="orb orb-1"></span><span class="orb orb-2"></span></div><div class="grid-overlay"></div><div class="wrap reveal"><div class="eyebrow" style="justify-content:center"><span class="dot"></span>${p.category}</div><h1>${p.title}</h1>${postMeta(p)}</div></div>
-<section class="section" style="padding-top:40px"><div class="wrap"><figure class="article-cover reveal"><img src="{{BASE}}assets/img/${postImg(p)}" alt="" width="1200" height="750"></figure><article class="article reveal">${p.body}${guidePromo(p)}</article></div></section>
+<section class="section" style="padding-top:40px"><div class="wrap"><figure class="article-cover reveal"><img src="{{BASE}}assets/img/${postImg(p)}" alt="" width="1200" height="750"></figure><article class="article reveal">${p.body}${guidePromo(p)}${articleCta}</article></div></section>
 <section class="section" style="padding-top:0"><div class="wrap">${sectionHead('Keep reading', 'More from the Kaizen Journal.')}<div class="blog-grid">${related.map(postCard).join('')}</div></div></section>
 ${ctaBand}</section>`;
   add({ route: `blog/${p.slug}/`, key: 'post', nav: 'blog', title: `${p.title} | ${NAME}`, description: p.metaDescription, content,
@@ -213,6 +251,8 @@ ${ctaBand}</section>`;
     description: `How The Kaizen Agency helped ${c.name}: ${cs.challenge.slice(0, 110)}`, content,
     crumbs: [['Portfolio', 'portfolio/'], [c.name, `portfolio/${c.slug}/`]] });
 }
+
+for (const ind of industries) landingPage(ind);
 
 // ---------- head extras ----------
 const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'],
@@ -260,6 +300,7 @@ function render(p, baseOverride) {
   if (p.crumbs) schemas.push({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [['Home', ''], ...p.crumbs].map(([n, r], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + '/' + r })) });
   const fs_ = faqSchema(p.content); if (fs_) schemas.push(fs_);
   p = { ...p, content: p.content
+    .replaceAll('{{N_BRANDS}}', String(clients.length)).replaceAll('{{N_INDS}}', String(new Set(clients.map(c => c.catL)).size))
     .replace(/(<div class="cta-band[\s\S]*?<div class="row">[\s\S]*?<\/div>)/g, '$1' + bookSteps())
     .replace('{{BLOG_FEATURED}}', blogFeatured).replace('{{BLOG_GRID}}', blogGrid)
     .replace('{{BOOK_STEPS}}', `<div class="book-steps reveal"><h2 class="h-md">What happens after you book</h2>${bookSteps(' light')}<a class="btn btn-primary" data-nav="contact">Pick a time ${arrow}</a></div>`) };

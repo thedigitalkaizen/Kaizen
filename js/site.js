@@ -234,7 +234,7 @@ var heroSeq=[
   {t:'typing'},
   {t:'bot',d:'Found it. Broad targeting + 1 creative. Let\u2019s run a Kaizen test loop.'},
   {t:'metric'},
-  {t:'bot',d:'3 weeks later: CPL down, leads up. Same budget.'}
+  {t:'bot',d:'One test a week. We keep whatever lowers your cost per lead.'}
 ];
 function playHeroChat(){
   var box=$('#heroChat');if(!box)return;box.innerHTML='';
@@ -247,7 +247,7 @@ function playHeroChat(){
       setTimeout(function(){box.removeChild(ty);next();},1100);return;
     }
     var el=document.createElement('div');
-    if(s.t==='metric'){el.className='bubble metric';el.innerHTML='<div class="mi"><div class="v down">₹512</div><div class="k">Cost / lead</div></div><div class="mi"><div class="v up">+63%</div><div class="k">More leads</div></div><div class="mi"><div class="v up">4.8x</div><div class="k">ROAS</div></div>';}
+    if(s.t==='metric'){el.className='bubble metric';el.innerHTML='<div class="mi"><div class="v down">Week 1</div><div class="k">Tighter audience</div></div><div class="mi"><div class="v up">Week 2</div><div class="k">3 new creatives</div></div><div class="mi"><div class="v up">Week 3</div><div class="k">5-min reply</div></div>';}
     else{el.className='bubble '+s.t;el.textContent=s.d;}
     box.appendChild(el);box.scrollTop=box.scrollHeight;
     setTimeout(next,s.t==='metric'?1600:1300);

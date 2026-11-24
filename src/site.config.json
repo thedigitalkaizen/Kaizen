@@ -2,7 +2,8 @@
   "_help": "Edit these values, then run: node build.mjs. Empty values are switched off.",
 
   "siteName": "The Kaizen Agency",
-  "siteUrl": "https://thekaizenagency.com",
+  "siteUrl": "https://thedigitalkaizen.github.io/Kaizen",
+  "_domain": "When thekaizenagency.co.in is bought: set siteUrl to https://thekaizenagency.co.in and customDomain to thekaizenagency.co.in",
   "customDomain": "",
   "githubPagesPath": "/Kaizen/",
 
