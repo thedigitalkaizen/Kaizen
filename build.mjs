@@ -52,7 +52,7 @@ const processSteps = `<section class="section" style="background:var(--bg-2)"><d
 // ---------- portfolio ----------
 const publishedCases = clients.filter(c => c.caseStudy && c.caseStudy.published);
 // one badge colour per industry, so colour carries meaning instead of rotating
-const catColor = { education: 'ic-royal', travel: 'ic-em', hospitality: 'ic-amber', lifestyle: 'ic-violet' };
+const catColor = { education: 'ic-royal', travel: 'ic-em', hospitality: 'ic-amber', lifestyle: 'ic-violet', food: 'ic-amber' };
 function portCard(c) {
   const mark = c.logo ? `<img src="{{BASE}}${esc(c.logo)}" alt="${esc(c.name)} logo" loading="lazy">` : c.ini;
   const metric = c.metric ? `<div class="port-metric"><b>${esc(c.metric)}</b><span>${esc(c.metricLabel)}</span></div>` : '';

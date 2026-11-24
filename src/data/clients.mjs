@@ -71,9 +71,15 @@ export const clients = [
     logo: '', metric: '', metricLabel: '', caseStudy: null
   },
   {
-    slug: 'allaha-rakha', cat: 'hospitality', catL: 'Hospitality', tile: 'ic-em', ini: 'AR',
-    name: 'Allaha Rakha',
+    slug: 'allahrakha-catering', cat: 'hospitality', catL: 'Hospitality', tile: 'ic-em', ini: 'AR',
+    name: 'Allahrakha Catering',
     desc: 'Catering brand serving events, functions and celebrations.',
+    logo: '', metric: '', metricLabel: '', caseStudy: null
+  },
+  {
+    slug: 'flavourzy', cat: 'food', catL: 'Food & D2C', tile: 'ic-violet', ini: 'FZ',
+    name: 'Flavourzy',
+    desc: 'Direct-to-consumer food brand selling online.',
     logo: '', metric: '', metricLabel: '', caseStudy: null
   },
   {
