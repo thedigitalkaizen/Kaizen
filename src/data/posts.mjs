@@ -182,7 +182,7 @@ export const posts = [
 
 <h2>Write it like a person, not a robot</h2>
 <p>A good first message is short and specific:</p>
-<p><em>“Hi Aisha, thanks for your enquiry about studying in the UK. I'm from the Kaizen team. Quick question so we can help faster: are you looking at the September or January intake?”</em></p>
+<p><em>“Hi Aisha, thanks for your enquiry about studying in the UK. I'm from the AdKaizen team. Quick question so we can help faster: are you looking at the September or January intake?”</em></p>
 <p>Avoid long menus (“Reply 1 for…, 2 for…”). Ask one question at a time and keep the tone of your best counsellor.</p>
 
 <h2>Where AI helps, and where it doesn't</h2>

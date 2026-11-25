@@ -39,7 +39,7 @@ for slug, kicker, lines, accent in COVERS:
         d.text((80, y), ln, font=ft, fill=(255, 255, 255))
         y += 96
     fb = ImageFont.truetype(FONT_S, 28)
-    d.text((80, H - 90), "The Kaizen Agency  ·  Kaizen Journal", font=fb, fill=(190, 200, 225))
+    d.text((80, H - 90), "AdKaizen Journal", font=fb, fill=(190, 200, 225))
     out = ROOT / "assets" / "img" / f"blog-{slug}.webp"
     img.save(out, "WEBP", quality=80)
     img.save(out.with_suffix(".jpg"), "JPEG", quality=82)

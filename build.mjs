@@ -76,7 +76,7 @@ function testimonials() {
 // ---------- ad landing pages: one per industry, no menu, one goal ----------
 function landingPage(ind) {
   const ours = clients.filter(c => c.cat === ind.clientCat);
-  const wa = `https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hi Kaizen team, I want a free audit for my ' + ind.navTitle.toLowerCase().replace(/s$/, '') + ' business')}`;
+  const wa = `https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hi AdKaizen team, I want a free audit for my ' + ind.navTitle.toLowerCase().replace(/s$/, '') + ' business')}`;
   const tel = 'tel:' + String(cfg.phone).replace(/[^+0-9]/g, '');
   const form = `<div class="form-card lp-form reveal in" id="lp-form"><h2 class="h-md">Get your free ad audit</h2><p class="muted lp-form-sub">30-minute call. You get the top 3 fixes in writing, whether or not you hire us.</p>
 <form data-ok="lpOk" data-source="Landing page — ${ind.navTitle}"><div class="form-ok" id="lpOk">Thanks! We’ll WhatsApp you within one business day.</div><div class="form-error" id="lpErr">Something went wrong. Please try again, or WhatsApp us.</div><input type="text" name="_gotcha" class="fld-hp" tabindex="-1" autocomplete="off" aria-hidden="true"><input type="hidden" name="industry" value="${ind.navTitle}">
@@ -107,10 +107,10 @@ const pages = [];
 const add = p => pages.push({ robots: 'index, follow', ...p });
 
 add({ route: '', key: 'home', nav: 'home', title: `${NAME} | Performance Marketing & Lead Generation in India & the GCC`,
-  description: 'The Kaizen Agency is a performance marketing agency for Meta Ads, Google Ads, SEO, lead generation and AI automation — engineered for measurable, compounding growth in India and the GCC.',
+  description: 'AdKaizen is a performance marketing agency for Meta Ads, Google Ads, SEO, lead generation and AI automation — engineered for measurable, compounding growth in India and the GCC.',
   content: read('src/pages/home.html').replace('{{HERO_PROOF}}', heroProof()) + testimonials() });
 add({ route: 'about/', key: 'about', nav: 'about', title: `About Us | ${NAME}`,
-  description: 'The Kaizen Agency is a performance marketing agency built on kaizen: continuous, measured improvement for education, travel and service brands in India and the GCC.',
+  description: 'AdKaizen is a performance marketing agency built on kaizen: continuous, measured improvement for education, travel and service brands in India and the GCC.',
   content: read('src/pages/about.html'), crumbs: [['About', 'about/']] });
 add({ route: 'services/', key: 'services', nav: 'services', title: `Digital Marketing Services | ${NAME}`,
   description: 'Performance marketing, Meta Ads, Google Ads, SEO, social media, web design, branding, AI automation, lead generation and CRO — run as one growth engine.',
@@ -118,14 +118,14 @@ add({ route: 'services/', key: 'services', nav: 'services', title: `Digital Mark
 add({ route: 'portfolio/', key: 'portfolio', nav: 'portfolio', title: `Portfolio & Client Work | ${NAME}`,
   description: 'Brands we work with across education, travel, training and hospitality — including Akbar Study Abroad, Akbar Umrah and Akbar Training Center Bahrain.',
   content: read('src/pages/portfolio.html').replace('{{PORTFOLIO_GRID}}', clients.map(portCard).join('')).replace('{{PORTFOLIO_SUMMARY}}', portSummary()), crumbs: [['Portfolio', 'portfolio/']] });
-add({ route: 'blog/', key: 'blog', nav: 'blog', title: `The Kaizen Journal — Growth Playbooks | ${NAME}`,
-  description: 'Practical growth playbooks for Meta Ads, Google Ads, SEO, CRO and AI automation from The Kaizen Agency.',
+add({ route: 'blog/', key: 'blog', nav: 'blog', title: `The AdKaizen Journal — Growth Playbooks | ${NAME}`,
+  description: 'Practical growth playbooks for Meta Ads, Google Ads, SEO, CRO and AI automation from AdKaizen.',
   content: read('src/pages/blog.html'), crumbs: [['Blog', 'blog/']] });
 add({ route: 'contact/', key: 'contact', nav: 'contact', title: `Contact & Free Strategy Call | ${NAME}`,
-  description: 'Book a free 30-minute strategy call with The Kaizen Agency, or message us on WhatsApp. A senior strategist replies within one business day.',
+  description: 'Book a free 30-minute strategy call with AdKaizen, or message us on WhatsApp. A senior strategist replies within one business day.',
   content: read('src/pages/contact.html'), crumbs: [['Contact', 'contact/']] });
 add({ route: 'privacy-policy/', key: 'privacy', nav: 'privacy-policy', title: `Privacy Policy | ${NAME}`,
-  description: 'How The Kaizen Agency collects, uses and protects information submitted through this website.',
+  description: 'How AdKaizen collects, uses and protects information submitted through this website.',
   content: read('src/pages/privacy-policy.html'), crumbs: [['Privacy Policy', 'privacy-policy/']] });
 
 // ROI calculator as its own page (same widget as the home page section)
@@ -169,7 +169,7 @@ ${ctaBand}</section>`;
   add({ route: `services/${s.slug}/`, key: 'service', nav: 'services', title: `${s.title} Agency in India & the GCC | ${NAME}`,
     description: s.metaDescription, content, crumbs: [['Services', 'services/'], [s.title, `services/${s.slug}/`]],
     schema: { '@context': 'https://schema.org', '@type': 'Service', name: s.title, serviceType: s.title, description: s.metaDescription,
-      provider: { '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'], url: SITE + '/' }, areaServed: ['India', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Bahrain', 'Oman'] } });
+      provider: { '@type': 'ProfessionalService', name: NAME, alternateName: ['Ad Kaizen', 'AdKaizen Agency'], url: SITE + '/' }, areaServed: ['India', 'Saudi Arabia', 'United Arab Emirates', 'Qatar', 'Bahrain', 'Oman'] } });
 }
 
 const svcBySlug = Object.fromEntries(services.map(s => [s.slug, s]));
@@ -197,9 +197,9 @@ ${ctaBand}</section>`,
 // ---------- Blog ----------
 const postImg = p => p.cover ? `blog-${p.slug}.webp` : p.img;
 const fmtDate = d => new Date(d + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
-const postMeta = p => `<div class="blog-meta"><span>By The Kaizen Agency</span><span class="dotsep"></span><span>${fmtDate(p.date)}</span><span class="dotsep"></span><span>${p.readMins} min read</span></div>`;
+const postMeta = p => `<div class="blog-meta"><span>By AdKaizen</span><span class="dotsep"></span><span>${fmtDate(p.date)}</span><span class="dotsep"></span><span>${p.readMins} min read</span></div>`;
 const postCard = p => `<a class="post reveal" data-nav="blog/${p.slug}"><div class="post-img"><span class="cat">${p.category}</span><img src="{{BASE}}assets/img/${postImg(p)}" alt="" loading="lazy" width="900" height="563"></div><div class="post-body"><h3>${p.title}</h3><p>${p.excerpt}</p><span class="post-link">Read article ${arrow}</span></div></a>`;
-const articleCta = `<div class="article-cta"><div><h3>Want us to look at your ads?</h3><p>Book a free 30-minute audit call. You leave with the top 3 fixes for your account, whether or not you hire us.</p></div><div class="ac-actions"><a class="btn btn-primary" data-nav="contact">Book Free Strategy Call ${arrow}</a><a class="btn btn-ghost" href="https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hi Kaizen team, I read your article and want a free audit')}" target="_blank" rel="noopener">WhatsApp us</a></div></div>`;
+const articleCta = `<div class="article-cta"><div><h3>Want us to look at your ads?</h3><p>Book a free 30-minute audit call. You leave with the top 3 fixes for your account, whether or not you hire us.</p></div><div class="ac-actions"><a class="btn btn-primary" data-nav="contact">Book Free Strategy Call ${arrow}</a><a class="btn btn-ghost" href="https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hi AdKaizen team, I read your article and want a free audit')}" target="_blank" rel="noopener">WhatsApp us</a></div></div>`;
 const guidePromo = p => { const g = p.industry === 'umrah-travel-agencies' ? guides[1] : (p.industry === 'study-abroad-consultants' || p.category === 'Meta Ads') ? guides[0] : null; return g ? `<div class="guide-promo"><div><span>Free ${g.kicker.split(' ·')[0].toLowerCase()}</span><b>${g.title}</b></div><a class="btn btn-primary" data-nav="guides">Get it free ${arrow}</a></div>` : ''; };
 const featuredPost = posts.find(p => p.featured) || posts[0];
 const blogFeatured = `<a class="blog-featured reveal" data-nav="blog/${featuredPost.slug}"><div class="bf-media"><span class="badge">Featured</span><img src="{{BASE}}assets/img/${postImg(featuredPost)}" alt="" loading="lazy"></div><div class="bf-body"><span class="cat">${featuredPost.category}</span><h3>${featuredPost.title}</h3><p>${featuredPost.excerpt}</p>${postMeta(featuredPost)}<span class="btn btn-primary">Read the playbook ${arrow}</span></div></a>`;
@@ -209,7 +209,7 @@ for (const p of posts) {
   const related = [...posts.filter(o => o !== p && o.industry && o.industry === p.industry), ...posts.filter(o => o !== p && !(o.industry && o.industry === p.industry))].slice(0, 3);
   const content = `<section class="page active" id="page-post"><div class="page-hero article-hero"><div class="orb-wrap"><span class="orb orb-1"></span><span class="orb orb-2"></span></div><div class="grid-overlay"></div><div class="wrap reveal"><div class="eyebrow" style="justify-content:center"><span class="dot"></span>${p.category}</div><h1>${p.title}</h1>${postMeta(p)}</div></div>
 <section class="section" style="padding-top:40px"><div class="wrap"><figure class="article-cover reveal"><img src="{{BASE}}assets/img/${postImg(p)}" alt="" width="1200" height="750"></figure><article class="article reveal">${p.body}${guidePromo(p)}${articleCta}</article></div></section>
-<section class="section" style="padding-top:0"><div class="wrap">${sectionHead('Keep reading', 'More from the Kaizen Journal.')}<div class="blog-grid">${related.map(postCard).join('')}</div></div></section>
+<section class="section" style="padding-top:0"><div class="wrap">${sectionHead('Keep reading', 'More from the AdKaizen Journal.')}<div class="blog-grid">${related.map(postCard).join('')}</div></div></section>
 ${ctaBand}</section>`;
   add({ route: `blog/${p.slug}/`, key: 'post', nav: 'blog', title: `${p.title} | ${NAME}`, description: p.metaDescription, content,
     ogImage: p.cover ? `assets/img/blog-${p.slug}.jpg` : undefined, ogType: 'article',
@@ -227,7 +227,7 @@ for (const ind of industries) {
 <section class="section" style="background:var(--bg-2)"><div class="wrap">${sectionHead('Our playbook', 'What we run for you.')}<div class="playbook">${ind.playbook.map(([t, d], i) => `<div class="pb-item reveal"><div class="n">${String(i + 1).padStart(2, '0')}</div><div><h3>${t}</h3><p>${d}</p></div></div>`).join('')}</div></div></section>
 <section class="section"><div class="wrap">${sectionHead('Trusted in this industry', 'Brands we work with.')}<div class="chip-row reveal">${ours.map(c => `<a class="chip-link" data-nav="${c.caseStudy && c.caseStudy.published ? 'portfolio/' + c.slug : 'portfolio'}">${esc(c.name)}</a>`).join('')}</div>
 <div class="svc-grid" style="margin-top:56px">${['meta-ads', 'google-ads', 'lead-generation'].map(k => svcCard(svcBySlug[k])).join('')}</div></div></section>
-${indPosts.length ? `<section class="section" style="padding-top:0"><div class="wrap">${sectionHead('From the Kaizen Journal', 'Guides for your industry.')}<div class="blog-grid">${indPosts.map(postCard).join('')}</div></div></section>` : ''}
+${indPosts.length ? `<section class="section" style="padding-top:0"><div class="wrap">${sectionHead('From the AdKaizen Journal', 'Guides for your industry.')}<div class="blog-grid">${indPosts.map(postCard).join('')}</div></div></section>` : ''}
 ${faqSection(ind.faqs)}
 ${ctaBand}</section>`;
   add({ route: `industries/${ind.slug}/`, key: 'industry', nav: 'services', title: `${ind.title} | ${NAME}`,
@@ -248,14 +248,14 @@ ${results}
 ${quote}
 ${ctaBand}</section>`;
   add({ route: `portfolio/${c.slug}/`, key: 'case', nav: 'portfolio', title: `${c.name} Case Study | ${NAME}`,
-    description: `How The Kaizen Agency helped ${c.name}: ${cs.challenge.slice(0, 110)}`, content,
+    description: `How AdKaizen helped ${c.name}: ${cs.challenge.slice(0, 110)}`, content,
     crumbs: [['Portfolio', 'portfolio/'], [c.name, `portfolio/${c.slug}/`]] });
 }
 
 for (const ind of industries) landingPage(ind);
 
 // ---------- head extras ----------
-const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: NAME, alternateName: ['Kaizen', 'Kaizen Agency'],
+const orgSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: NAME, alternateName: ['Ad Kaizen', 'AdKaizen Agency'],
   description: 'Performance marketing agency specialising in Meta Ads, Google Ads, SEO, lead generation and AI automation.',
   url: SITE + '/', logo: SITE + '/assets/brand/symbol-color.svg', image: SITE + '/assets/img/og-image.jpg', telephone: cfg.phone, email: cfg.email, priceRange: '₹₹',
   address: { '@type': 'PostalAddress', addressLocality: 'Mumbai', addressRegion: 'Maharashtra', addressCountry: 'IN' },

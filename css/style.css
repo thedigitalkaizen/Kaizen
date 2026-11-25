@@ -730,3 +730,7 @@ a.post,a.blog-featured{color:inherit;text-decoration:none}
 .article .article-cta a.btn-primary{color:#fff}
 .article .article-cta a.btn-ghost{color:var(--text)}
 .article .article-cta h3{font-size:1.25rem}
+/* AdKaizen wordmark: "Ad" in brand blue */
+.logo b .ad{color:var(--royal)}
+footer .logo b .ad{color:var(--royal-soft)}
+[data-theme="dark"] .logo b .ad{color:var(--royal-soft)}

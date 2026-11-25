@@ -278,7 +278,7 @@ $$('.cw-quick button').forEach(function(b){b.addEventListener('click',function()
     r.textContent=rep;body.appendChild(r);
     var acts=document.createElement('div');acts.className='cw-acts';
     acts.innerHTML='<button type="button" class="btn btn-primary" data-book>Book free audit</button>'+
-      (CFG.whatsapp?'<a class="btn btn-ghost" target="_blank" rel="noopener" href="https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent('Hi Kaizen team, '+b.textContent+'.')+'">WhatsApp us</a>':'')+
+      (CFG.whatsapp?'<a class="btn btn-ghost" target="_blank" rel="noopener" href="https://wa.me/'+CFG.whatsapp+'?text='+encodeURIComponent('Hi AdKaizen team, '+b.textContent+'.')+'">WhatsApp us</a>':'')+
       (q==='leads'?'<a class="btn btn-ghost" href="'+BASE+'tools/roi-calculator/">Try the ROI calculator</a>':'');
     body.appendChild(acts);body.scrollTop=body.scrollHeight;
     track('chat_question',{topic:q});
@@ -326,7 +326,7 @@ $$('form[data-ok]').forEach(function(f){
     }
 
     var data=new FormData(f);
-    data.set('_subject','New lead — '+(f.getAttribute('data-source')||'The Kaizen Agency website'));
+    data.set('_subject','New lead — '+(f.getAttribute('data-source')||'AdKaizen website'));
     var attr=attributionFields();
     Object.keys(attr).forEach(function(k){if(attr[k])data.set(k,attr[k]);});
 
