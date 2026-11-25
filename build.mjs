@@ -18,6 +18,7 @@ const read = p => fs.readFileSync(path.join(ROOT, p), 'utf8');
 const layout = read('src/layout.html');
 const SITE = cfg.siteUrl.replace(/\/$/, '');
 const NAME = cfg.siteName;
+const REQUEST_MODE = !!cfg.callRequestApi; // 'Book' buttons open the vetted request page instead of the calendar
 
 // ---------- validation (keeps bad IDs from breaking or injecting into pages) ----------
 const check = (val, re, label) => { if (val && !re.test(val)) throw new Error(`site.config.json: ${label} "${val}" looks wrong`); };
@@ -100,6 +101,50 @@ ${faqSection(ind.faqs)}
 </section>`;
   add({ route: `lp/${ind.slug}/`, key: 'lp', nav: '', robots: 'noindex, follow', title: `Free Ad Audit for ${ind.navTitle} | ${NAME}`,
     description: ind.metaDescription, content });
+}
+
+// ---------- /book-a-call/: form → email code (OTP) → CRM pipeline; the booking link is sent by hand after review ----------
+function bookCallPage() {
+  const wa = `https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent('Hi AdKaizen team, I sent a strategy call request on your website.')}`;
+  const opt = a => a.map(([v, t]) => `<option value="${v}">${t}</option>`).join('');
+  const form = `<div class="form-card lp-form cr-card reveal in" id="call-form">
+<form id="callReq" data-step="details" novalidate>
+<div class="cr-head"><h2 class="h-md">Request your free call</h2><p class="muted lp-form-sub">Takes a minute. We confirm your email with a 6-digit code.</p></div>
+<div class="form-error" id="crErr" role="alert"></div>
+<input type="text" name="_gotcha" class="fld-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+<fieldset class="cr-details">
+<div class="crf-row"><div class="fld"><label for="cr-name">Your name</label><input id="cr-name" name="name" autocomplete="name" maxlength="120" required></div>
+<div class="fld"><label for="cr-company">Company / brand</label><input id="cr-company" name="company" autocomplete="organization" maxlength="160" required></div></div>
+<div class="crf-row"><div class="fld"><label for="cr-email">Work email</label><input id="cr-email" type="email" name="email" autocomplete="email" maxlength="200" required></div>
+<div class="fld"><label for="cr-phone">WhatsApp number</label><input id="cr-phone" type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+91 98765 43210" maxlength="20" pattern="[+0-9 ()-]{7,20}" required></div></div>
+<div class="fld"><label for="cr-web">Website or Instagram</label><input id="cr-web" name="website" maxlength="300" placeholder="yourbrand.com or @yourbrand" required></div>
+<div class="crf-row"><div class="fld"><label for="cr-ind">Industry</label><select id="cr-ind" name="industry">${opt([['education', 'Education'], ['travel', 'Travel &amp; Umrah'], ['training', 'Training institute'], ['other', 'Other']])}</select></div>
+<div class="fld"><label for="cr-country">Country</label><select id="cr-country" name="country">${opt([['IN', 'India'], ['AE', 'UAE'], ['SA', 'Saudi Arabia'], ['QA', 'Qatar'], ['BH', 'Bahrain'], ['OM', 'Oman'], ['KW', 'Kuwait'], ['OT', 'Other']])}</select></div></div>
+<div class="fld"><label for="cr-budget">Monthly ad budget</label><select id="cr-budget" name="budget">${opt([['Under ₹1L', 'Under ₹1L'], ['₹1L – ₹3L', '₹1L – ₹3L'], ['₹3L – ₹10L', '₹3L – ₹10L'], ['₹10L+', '₹10L+'], ['Not running ads yet', 'Not running ads yet']])}</select></div>
+<div class="fld"><label for="cr-msg">What do you want help with? <span class="opt">(optional)</span></label><textarea id="cr-msg" name="message" maxlength="600" rows="3"></textarea></div>
+<button class="btn btn-primary btn-block btn-lg" type="submit">Send me the code ${arrow}</button>
+<p class="form-note">No spam. We only use your details to review your request.</p>
+</fieldset>
+<fieldset class="cr-code" disabled>
+<p class="cr-sent">We sent a 6-digit code to <b id="crEmailShow"></b>. Check your inbox and spam folder.</p>
+<div class="fld"><label for="cr-otp">Verification code</label><input id="cr-otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6-digit code" class="cr-otp"></div>
+<button class="btn btn-primary btn-block btn-lg" type="submit">Verify and send request ${arrow}</button>
+<div class="cr-links"><button type="button" class="link-btn" id="crBack">Change details</button><button type="button" class="link-btn" id="crResend" disabled>Send a new code</button></div>
+</fieldset>
+</form>
+<div class="cr-done" id="crDone" hidden tabindex="-1"><div class="cr-tick">${tick}</div><h2 class="h-md">Request received</h2>
+<p>Thanks! A strategist will look at your business and email your personal booking link within one business day.</p>
+<p class="muted">Need us sooner? Message us on WhatsApp.</p><a class="btn btn-ghost btn-block" href="${wa}" target="_blank" rel="noopener">WhatsApp us</a></div>
+</div>`;
+  const content = `<section class="page active" id="page-lp">
+<div class="hero lp-hero"><div class="orb-wrap"><span class="orb orb-1"></span><span class="orb orb-2"></span></div><div class="grid-overlay"></div><div class="wrap"><div class="hero-grid">
+<div><div class="eyebrow reveal in"><span class="dot"></span>Free strategy call</div><h1 class="reveal d1 in">Book your free strategy call</h1>
+<p class="lead reveal d2 in">30 minutes on Google Meet with a senior strategist. We review every request first, so each call is prepared for your business.</p>
+<ol class="cta-steps light cr-steps reveal d3 in" aria-label="How booking works">${STEPS.map(([t, d], i) => `<li><span class="n">${i + 1}</span><div><b>${t}</b><span>${d}</span></div></li>`).join('')}</ol></div>
+${form}</div></div></div>
+</section>`;
+  add({ route: 'book-a-call/', key: 'lp', nav: '', robots: 'noindex, follow', title: `Book a Free Strategy Call | ${NAME}`,
+    description: 'Request a free 30-minute strategy call with AdKaizen. Verify your email, we review your business and send your booking link.', content });
 }
 
 // ---------- page definitions ----------
@@ -284,10 +329,13 @@ function faqSchema(html) {
 
 // ---------- render ----------
 const industryLinks = industries.map(i => `<a data-nav="industries/${i.slug}">${i.navTitle}</a>`).join('');
-const clientConfig = { formspree: cfg.formspreeEndpoint || '', booking: cfg.bookingUrl || '', whatsapp: cfg.whatsappNumber || '' };
+const clientConfig = { formspree: cfg.formspreeEndpoint || '', booking: REQUEST_MODE ? '' : (cfg.bookingUrl || ''), callApi: cfg.callRequestApi || '', whatsapp: cfg.whatsappNumber || '' };
 
-const STEPS = [['Pick a time', 'Choose any free 30-minute slot in our calendar.'], ['Audit call on Google Meet', 'We review your ads, funnel and cost per lead with you, live.'], ['Leave with a plan', 'You get the top 3 fixes in writing, whether or not you hire us.']];
-const bookSteps = (cls = '') => `<ol class="cta-steps${cls}" aria-label="What happens after you book">${STEPS.map(([t, d], i) => `<li><span class="n">${i + 1}</span><div><b>${t}</b><span>${d}</span></div></li>`).join('')}</ol>`;
+const STEPS = REQUEST_MODE
+  ? [['Send your details', 'A short form. We confirm your email with a 6-digit code.'], ['We review your business', 'A strategist checks your brand, then sends your booking link within one business day.'], ['30-minute call on Google Meet', 'You leave with the top 3 fixes in writing, whether or not you hire us.']]
+  : [['Pick a time', 'Choose any free 30-minute slot in our calendar.'], ['Audit call on Google Meet', 'We review your ads, funnel and cost per lead with you, live.'], ['Leave with a plan', 'You get the top 3 fixes in writing, whether or not you hire us.']];
+if (REQUEST_MODE) bookCallPage(); // needs STEPS, so it runs here
+const bookSteps = (cls = '') => `<ol class="cta-steps${cls}" aria-label="How booking works">${STEPS.map(([t, d], i) => `<li><span class="n">${i + 1}</span><div><b>${t}</b><span>${d}</span></div></li>`).join('')}</ol>`;
 
 const ver = f => crypto.createHash('md5').update(fs.readFileSync(path.join(ROOT, f))).digest('hex').slice(0, 8);
 const V_CSS = ver('css/style.css'), V_JS = ver('js/site.js');
@@ -303,7 +351,7 @@ function render(p, baseOverride) {
     .replaceAll('{{N_BRANDS}}', String(clients.length)).replaceAll('{{N_INDS}}', String(new Set(clients.map(c => c.catL)).size))
     .replace(/(<div class="cta-band[\s\S]*?<div class="row">[\s\S]*?<\/div>)/g, '$1' + bookSteps())
     .replace('{{BLOG_FEATURED}}', blogFeatured).replace('{{BLOG_GRID}}', blogGrid)
-    .replace('{{BOOK_STEPS}}', `<div class="book-steps reveal"><h2 class="h-md">What happens after you book</h2>${bookSteps(' light')}<a class="btn btn-primary" data-nav="contact">Pick a time ${arrow}</a></div>`) };
+    .replace('{{BOOK_STEPS}}', `<div class="book-steps reveal"><h2 class="h-md">${REQUEST_MODE ? 'How booking works' : 'What happens after you book'}</h2>${bookSteps(' light')}<a class="btn btn-primary" data-nav="contact">${REQUEST_MODE ? 'Book a free call' : 'Pick a time'} ${arrow}</a></div>`) };
   if (p.schema) schemas.push(p.schema);
   let head = '';
   if (cfg.googleSiteVerification && p.route === '') head += `<meta name="google-site-verification" content="${cfg.googleSiteVerification}">\n`;
@@ -338,8 +386,8 @@ function render(p, baseOverride) {
     attrs = attrs.replace(/\sclass="([^"]*)"/, (_, c) => ` class="${c.replace(/\bactive\b/, '').trim()}${isActive ? ' active' : ''}"`.replace(' class=" active"', ' class="active"'));
     if (isActive && !/\sclass=/.test(attrs)) attrs += ' class="active"';
     attrs = attrs.replace(/\sclass=""/, '');
-    const href = target === 'home' ? (BASE || './') : BASE + target + '/';
     const book = target === 'contact' && /Book|Strategy Call/i.test(inner) ? ' data-book' : '';
+    const href = book && REQUEST_MODE ? BASE + 'book-a-call/' : target === 'home' ? (BASE || './') : BASE + target + '/';
     return `<a href="${href}"${attrs}${book} data-nav="${target}">${inner}</a>`;
   });
 

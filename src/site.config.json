@@ -24,6 +24,9 @@
   "_booking": "Google Calendar appointment page (long calendar.google.com link, opens as a popup on the site; short link: https://calendar.app.google/VWGDVKbRjunMm8sZA). A Calendly link also opens as a popup. Any other link opens in a new tab. Empty = buttons go to the contact page.",
   "bookingUrl": "https://calendar.google.com/calendar/appointments/schedules/AcZssZ0IDO6kzPcJTnAvSafvCceTOrIcq8xVDPW50cukAOkh2Q28PczfY1dVNpHPyn12HTmLBEr_JVqA",
 
+  "_callRequest": "AdKaizen CRM web app /exec URL. When set, every 'Book' button opens /book-a-call/: a form + email code (OTP). Verified requests land in the CRM Sales pipeline; you send the booking link by hand. Empty = the bookingUrl popup above is used instead.",
+  "callRequestApi": "https://script.google.com/macros/s/AKfycbx6EB2OdR0G_ALa753jCtawTBJqDJpvrKc3ipHGpTo6YASbF9d78AUZNH4ba4ZoHTRzKQ/exec",
+
   "_search": "From Google Search Console > Add property > HTML tag: paste only the content=\"...\" value",
   "googleSiteVerification": "",
 

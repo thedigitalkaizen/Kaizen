@@ -351,6 +351,62 @@ $$('form[data-ok]').forEach(function(f){
   });
 });
 
+/* ---------- FREE CALL REQUEST (/book-a-call/): details → email code → CRM Sales pipeline ---------- */
+(function(){
+  var f=document.getElementById('callReq');if(!f)return;
+  var err=document.getElementById('crErr'),done=document.getElementById('crDone');
+  var det=f.querySelector('.cr-details'),cod=f.querySelector('.cr-code'),otp=document.getElementById('cr-otp');
+  var resend=document.getElementById('crResend'),timer=null,busy=false;
+  function rid(){var a=new Uint8Array(12);(window.crypto||{getRandomValues:function(x){for(var i=0;i<x.length;i++)x[i]=Math.random()*256;return x;}}).getRandomValues(a);return 'web'+Array.prototype.map.call(a,function(b){return('0'+b.toString(16)).slice(-2);}).join('');}
+  function rpc(fn,args){
+    if(!CFG.callApi)return Promise.reject(new Error('Requests are not open right now. Please WhatsApp us.'));
+    return fetch(CFG.callApi,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:fn,args:args,rid:rid()}),redirect:'follow'})
+      .then(function(r){return r.json();})
+      .then(function(j){if(!j.ok)throw new Error(j.e||'Something went wrong.');return j.v;});
+  }
+  function showErr(m){err.textContent=m||'';err.classList.toggle('show',!!m);}
+  function step(s){
+    f.setAttribute('data-step',s);det.disabled=s!=='details';cod.disabled=s!=='code';
+    if(s==='code'){document.getElementById('crEmailShow').textContent=val('email');otp.value='';setTimeout(function(){otp.focus();},50);}
+  }
+  function val(n){var el=f.elements[n];return el?String(el.value||'').trim():'';}
+  function data(){
+    var ind=f.elements.industry;
+    return {name:val('name'),company:val('company'),email:val('email'),phone:val('phone'),website:val('website'),industry:val('industry'),
+      industryText:ind.options[ind.selectedIndex].text,country:val('country'),budget:val('budget'),message:val('message')};
+  }
+  function setBusy(b){busy=b;$$('button[type=submit]',f).forEach(function(x){x.disabled=b;x.classList.toggle('loading',b);});}
+  function cooldown(){
+    var s=30;resend.disabled=true;clearInterval(timer);
+    resend.textContent='Send a new code ('+s+'s)';
+    timer=setInterval(function(){s--;if(s<=0){clearInterval(timer);resend.disabled=false;resend.textContent='Send a new code';}else resend.textContent='Send a new code ('+s+'s)';},1000);
+  }
+  function sendCode(){
+    showErr('');setBusy(true);
+    return rpc('requestCallOtp',[val('email')]).then(function(){step('code');cooldown();track('call_code_sent',{});})
+      .catch(function(e){showErr(e.message);}).then(function(){setBusy(false);});
+  }
+  f.addEventListener('submit',function(e){
+    e.preventDefault();if(busy)return;
+    if(f.elements._gotcha&&f.elements._gotcha.value){f.hidden=true;done.hidden=false;return;} /* bot */
+    if(f.getAttribute('data-step')==='details'){
+      var bad=$$('input[required]',det).filter(function(i){return !i.checkValidity();})[0];
+      if(bad){showErr(bad.type==='email'?'Enter a valid work email.':bad.type==='tel'?'Enter your WhatsApp number with country code.':'Please fill in: '+(bad.labels[0]?bad.labels[0].textContent:'all fields')+'.');bad.focus();return;}
+      sendCode();return;
+    }
+    var code=otp.value.replace(/\D/g,'');
+    if(code.length!==6){showErr('Enter the 6-digit code from the email.');otp.focus();return;}
+    showErr('');setBusy(true);
+    rpc('submitCallRequest',[data(),code]).then(function(){
+      clearInterval(timer);f.hidden=true;done.hidden=false;done.focus();
+      track('generate_lead',{form:'call_request'},'Lead');
+    }).catch(function(e){showErr(e.message);if(/expired|Too many wrong/.test(e.message))resend.disabled=false;}).then(function(){setBusy(false);});
+  });
+  document.getElementById('crBack').addEventListener('click',function(){showErr('');step('details');f.elements.email.focus();});
+  resend.addEventListener('click',function(){if(!busy)sendCode();});
+  otp.addEventListener('input',function(){otp.value=otp.value.replace(/\D/g,'').slice(0,6);});
+})();
+
 /* ---------- YEAR ---------- */
 $$('.yr').forEach(function(y){y.textContent=new Date().getFullYear()});
 })();
