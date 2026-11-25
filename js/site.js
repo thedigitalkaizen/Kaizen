@@ -383,7 +383,7 @@ $$('form[data-ok]').forEach(function(f){
   }
   function sendCode(){
     showErr('');setBusy(true);
-    return rpc('requestCallOtp',[val('email')]).then(function(){step('code');cooldown();track('call_code_sent',{});})
+    return rpc('requestCallOtp',[val('email'),val('name')]).then(function(){step('code');cooldown();track('call_code_sent',{});})
       .catch(function(e){showErr(e.message);}).then(function(){setBusy(false);});
   }
   f.addEventListener('submit',function(e){
