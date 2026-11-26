@@ -803,3 +803,8 @@ footer .logo b .ad{color:var(--royal-soft)}
   .foot-grid{grid-template-columns:1fr 1fr;gap:30px 18px}
   .foot-grid>.foot-about,.foot-grid>.news{grid-column:1/-1}
 }
+
+/* ============ HEADER FIX 2026-11-26 ============ */
+/* the 72%-transparent header turned muddy grey over dark sections; keep it near-solid */
+header.scrolled{background:rgba(255,255,255,.96);box-shadow:0 6px 24px -12px rgba(11,18,38,.25)}
+[data-theme="dark"] header.scrolled{background:rgba(10,17,41,.96)}
