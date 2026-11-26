@@ -62,6 +62,20 @@ function portCard(c) {
 }
 const heroProof = () => `<p class="hero-proof reveal d3 in"><span class="hp-dots">${clients.slice(0, 3).map(c => `<i class="${catColor[c.cat] || 'ic-royal'}">${esc(c.ini)}</i>`).join('')}</span><span>Working with <b>${esc(clients[0].name)}</b>, <b>${esc(clients[7] ? clients[7].name : clients[1].name)}</b> and ${clients.length - 2} more brands across India &amp; the GCC</span></p>`;
 const COUNTRIES = ["India", "Saudi Arabia", "UAE", "Qatar", "Bahrain", "Oman"];
+
+// "By the numbers" bento: every number is shown with the real things it counts
+const CC = { "India": "IN", "Saudi Arabia": "SA", "UAE": "AE", "Qatar": "QA", "Bahrain": "BH", "Oman": "OM" };
+function proofBlock() {
+  const inds = [...new Set(clients.map(c => c.catL))];
+  const bars = Array.from({ length: 12 }, (_, i) => `<i style="height:${Math.round(22 + i * 78 / 11)}%"></i>`).join('');
+  return `<div class="proof">
+<div class="pf w reveal"><div class="pf-top"><span class="pf-n">${clients.length}</span><span class="pf-l">brands we work with</span></div><div class="pf-chips">${clients.map(c => `<span>${esc(c.name)}</span>`).join('')}</div></div>
+<div class="pf reveal d1"><div class="pf-top"><span class="pf-n">${inds.length}</span><span class="pf-l">industries</span></div><div class="pf-chips">${inds.map(x => `<span>${esc(x)}</span>`).join('')}</div></div>
+<div class="pf reveal d1"><div class="pf-top"><span class="pf-n">${COUNTRIES.length}</span><span class="pf-l">countries</span></div><div class="pf-cc">${COUNTRIES.map(c => `<span><b>${CC[c] || ''}</b>${esc(c)}</span>`).join('')}</div></div>
+<div class="pf w reveal d2"><div class="pf-top"><span class="pf-n">10</span><span class="pf-l">tested changes per account, each week</span></div><div class="pf-track">${bars}</div><div class="pf-axis"><span>Week 1</span><span>12 weeks = 120 tested changes</span><span>Week 12</span></div></div>
+</div>`;
+}
+
 function portSummary() {
   const inds = [...new Set(clients.map(c => c.catL))];
   return `<div class="port-summary reveal"><div class="ps-stats"><div><b>${clients.length}</b><span>Brands</span></div><div><b>${inds.length}</b><span>Industries</span></div><div><b>${COUNTRIES.length}</b><span>Countries</span></div></div><div class="ps-countries">${COUNTRIES.map(c => `<span>${c}</span>`).join("")}</div></div>`;
@@ -348,7 +362,7 @@ function render(p, baseOverride) {
   if (p.crumbs) schemas.push({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [['Home', ''], ...p.crumbs].map(([n, r], i) => ({ '@type': 'ListItem', position: i + 1, name: n, item: SITE + '/' + r })) });
   const fs_ = faqSchema(p.content); if (fs_) schemas.push(fs_);
   p = { ...p, content: p.content
-    .replaceAll('{{N_BRANDS}}', String(clients.length)).replaceAll('{{N_INDS}}', String(new Set(clients.map(c => c.catL)).size))
+    .replaceAll('{{PROOF}}', proofBlock()).replaceAll('{{N_BRANDS}}', String(clients.length)).replaceAll('{{N_INDS}}', String(new Set(clients.map(c => c.catL)).size))
     .replace(/(<div class="cta-band[\s\S]*?<div class="row">[\s\S]*?<\/div>)/g, '$1' + bookSteps())
     .replace('{{BLOG_FEATURED}}', blogFeatured).replace('{{BLOG_GRID}}', blogGrid)
     .replace('{{BOOK_STEPS}}', `<div class="book-steps reveal"><h2 class="h-md">${REQUEST_MODE ? 'How booking works' : 'What happens after you book'}</h2>${bookSteps(' light')}<a class="btn btn-primary" data-nav="contact">${REQUEST_MODE ? 'Book a free call' : 'Pick a time'} ${arrow}</a></div>`) };
